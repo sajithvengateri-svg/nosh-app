@@ -1,0 +1,97 @@
+{
+  "cli": {
+    "version": ">= 16.0.0"
+  },
+  "build": {
+    "chefos-dev": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "env": {
+        "APP_VARIANT": "chefos"
+      }
+    },
+    "homechef-dev": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "env": {
+        "APP_VARIANT": "homechef"
+      }
+    },
+    "eatsafe-dev": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "env": {
+        "APP_VARIANT": "eatsafe_brisbane"
+      }
+    },
+    "india-dev": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "env": {
+        "APP_VARIANT": "india_fssai"
+      }
+    },
+    "chefos-preview": {
+      "distribution": "internal",
+      "env": {
+        "APP_VARIANT": "chefos"
+      }
+    },
+    "homechef-preview": {
+      "distribution": "internal",
+      "env": {
+        "APP_VARIANT": "homechef"
+      }
+    },
+    "eatsafe-preview": {
+      "distribution": "internal",
+      "env": {
+        "APP_VARIANT": "eatsafe_brisbane"
+      }
+    },
+    "india-preview": {
+      "distribution": "internal",
+      "env": {
+        "APP_VARIANT": "india_fssai"
+      }
+    },
+    "chefos-production": {
+      "env": {
+        "APP_VARIANT": "chefos"
+      }
+    },
+    "homechef-production": {
+      "env": {
+        "APP_VARIANT": "homechef"
+      }
+    },
+    "eatsafe-production": {
+      "env": {
+        "APP_VARIANT": "eatsafe_brisbane"
+      }
+    },
+    "india-production": {
+      "env": {
+        "APP_VARIANT": "india_fssai"
+      }
+    }
+  },
+  "submit": {
+    "chefos-production": {
+      "ios": {},
+      "android": {}
+    },
+    "homechef-production": {
+      "ios": {},
+      "android": {}
+    },
+    "eatsafe-production": {
+      "ios": {},
+      "android": {}
+    },
+    "india-production": {
+      "ios": {},
+      "android": {}
+    }
+  }
+}

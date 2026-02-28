@@ -1,0 +1,1 @@
+// User queries — stub for future implementation

@@ -1,0 +1,36 @@
+{
+  "name": "queitos",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "dev:web": "npm run dev --workspace=apps/web",
+    "build": "vite build",
+    "build:web": "npm run build --workspace=apps/web",
+    "build:dev": "vite build --mode development",
+    "dev:mobile": "npm run start --workspace=apps/mobile",
+    "test": "npm run test --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present",
+    "typecheck": "npx tsc --noEmit --project apps/web/tsconfig.json",
+    "db:push": "supabase db push",
+    "db:types": "supabase gen types typescript --project-id gmvfjgkzbpjimmzxcniv > apps/web/src/integrations/supabase/types.ts",
+    "functions:deploy": "supabase functions deploy"
+  },
+  "dependencies": {
+    "@types/node": "^22.19.11",
+    "@vitejs/plugin-react-swc": "^3.11.0",
+    "autoprefixer": "^10.4.24",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^3.4.19",
+    "tailwindcss-animate": "^1.0.7",
+    "typescript": "^5.9.3",
+    "vite": "^5.4.21"
+  },
+  "overrides": {},
+  "devDependencies": {
+    "@playwright/test": "^1.58.2"
+  }
+}

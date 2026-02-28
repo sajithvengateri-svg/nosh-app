@@ -1,0 +1,82 @@
+import "jsr:@supabase/functions-js/edge-runtime.d.ts";
+import { requireAuth } from "../_shared/auth.ts";
+import { aiChat } from "../_shared/ai.ts";
+import { checkAiQuota, logAiUsage, getUserOrgId } from "../_shared/usage.ts";
+
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+};
+
+Deno.serve(async (req) => {
+  if (req.method === "OPTIONS") {
+    return new Response("ok", { headers: corsHeaders });
+  }
+
+  const authResult = await requireAuth(req);
+  if (authResult instanceof Response) return authResult;
+
+  try {
+    const _orgId = await getUserOrgId(authResult.user.id);
+    if (_orgId) {
+      const _quota = await checkAiQuota(_orgId);
+      if (!_quota.allowed) {
+        return new Response(JSON.stringify({ error: "ai_quota_exceeded", message: "Monthly AI limit reached. Resets on the 1st.", pct_used: _quota.pct_used }), { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      }
+    }
+
+    const { image_base64 } = await req.json();
+    if (!image_base64) {
+      return new Response(JSON.stringify({ error: "image_base64 is required" }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
+    const prompt = `Analyze this food product label image and extract any date information.
+
+Look for:
+- Expiry date / Use-by date
+- Best-before date
+- Manufacturing date
+- Batch/lot number if visible
+
+Respond in JSON format:
+{
+  "expiry_date": "YYYY-MM-DD" | null,
+  "best_before_date": "YYYY-MM-DD" | null,
+  "manufacturing_date": "YYYY-MM-DD" | null,
+  "date_type": "use_by" | "best_before" | "expiry" | "unknown",
+  "batch_number": "string" | null,
+  "confidence": 0.0-1.0,
+  "raw_text": "the exact text found on the label"
+}`;
+
+    const _aiStart = Date.now();
+    const aiResult = await aiChat({
+      messages: [{
+        role: "user",
+        content: [
+          { type: "text", text: prompt },
+          { type: "image_url", image_url: { url: `data:image/jpeg;base64,${image_base64}` } },
+        ],
+      }],
+      response_format: { type: "json_object" },
+    });
+    const _aiLatency = Date.now() - _aiStart;
+    if (_orgId) {
+      logAiUsage({ org_id: _orgId, user_id: authResult.user.id, function_name: "scan-expiry-date", provider: "gemini", model: "gemini-2.0-flash", usage: aiResult.usage ?? { input_tokens: 0, output_tokens: 0, total_tokens: 0 }, latency_ms: _aiLatency, has_image: true });
+    }
+
+    const parsed = JSON.parse(aiResult.content || "{}");
+
+    return new Response(JSON.stringify(parsed), {
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  } catch (error: any) {
+    return new Response(JSON.stringify({ error: error.message }), {
+      status: 500,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  }
+});

@@ -1,0 +1,160 @@
+name: Deploy OTA Update
+
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: "Deploy target: chefos, homechef, eatsafe, all, au, in, uae, uk, sg, us, or a single variant"
+        required: true
+        type: choice
+        options:
+          - all
+          - chefos
+          - homechef
+          - eatsafe
+          - au
+          - in
+          - uae
+          - uk
+          - sg
+          - us
+          - chefos
+          - homechef
+          - eatsafe_brisbane
+          - chefos_in
+          - homechef_in
+          - india_fssai
+          - chefos_uae
+          - homechef_uae
+          - gcc_uae
+          - chefos_uk
+          - homechef_uk
+          - eatsafe_london
+          - chefos_sg
+          - homechef_sg
+          - eatsafe_sg
+          - chefos_us
+          - homechef_us
+          - eatsafe_ny
+      profile:
+        description: "EAS update branch/profile"
+        required: true
+        default: production
+        type: choice
+        options:
+          - production
+          - preview
+      message:
+        description: "Update message (optional)"
+        required: false
+        type: string
+      rollback:
+        description: "Rollback to previous update (instead of deploying new)"
+        required: false
+        default: false
+        type: boolean
+
+jobs:
+  resolve:
+    name: Resolve Variants
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.resolve.outputs.matrix }}
+      count: ${{ steps.resolve.outputs.count }}
+    steps:
+      - id: resolve
+        run: |
+          TARGET="${{ inputs.target }}"
+
+          CHEFOS="chefos chefos_in chefos_uae chefos_uk chefos_sg chefos_us"
+          HOMECHEF="homechef homechef_in homechef_uae homechef_uk homechef_sg homechef_us"
+          EATSAFE="eatsafe_brisbane india_fssai gcc_uae eatsafe_london eatsafe_sg eatsafe_ny"
+
+          AU="chefos homechef eatsafe_brisbane"
+          IN="chefos_in homechef_in india_fssai"
+          UAE="chefos_uae homechef_uae gcc_uae"
+          UK="chefos_uk homechef_uk eatsafe_london"
+          SG="chefos_sg homechef_sg eatsafe_sg"
+          US="chefos_us homechef_us eatsafe_ny"
+
+          case "$TARGET" in
+            all)      VARIANTS="$CHEFOS $HOMECHEF $EATSAFE" ;;
+            chefos)   VARIANTS="$CHEFOS" ;;
+            homechef) VARIANTS="$HOMECHEF" ;;
+            eatsafe)  VARIANTS="$EATSAFE" ;;
+            au)       VARIANTS="$AU" ;;
+            in)       VARIANTS="$IN" ;;
+            uae)      VARIANTS="$UAE" ;;
+            uk)       VARIANTS="$UK" ;;
+            sg)       VARIANTS="$SG" ;;
+            us)       VARIANTS="$US" ;;
+            *)        VARIANTS="$TARGET" ;;
+          esac
+
+          JSON=$(echo "$VARIANTS" | tr ' ' '\n' | sort -u | jq -R . | jq -sc '.')
+          COUNT=$(echo "$JSON" | jq 'length')
+          echo "matrix={\"variant\":$JSON}" >> "$GITHUB_OUTPUT"
+          echo "count=$COUNT" >> "$GITHUB_OUTPUT"
+          echo "Deploying $COUNT variant(s): $VARIANTS"
+
+  deploy:
+    name: Deploy ${{ matrix.variant }}
+    runs-on: ubuntu-latest
+    needs: resolve
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.resolve.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+
+      - name: Setup EAS CLI
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      # Rollback: revert to the previous update on this branch
+      - name: Rollback ${{ matrix.variant }}
+        if: ${{ inputs.rollback == true }}
+        working-directory: apps/mobile
+        run: |
+          echo "Rolling back ${{ matrix.variant }} on branch ${{ inputs.profile }}..."
+          APP_VARIANT=${{ matrix.variant }} eas update:rollback \
+            --branch ${{ inputs.profile }} \
+            --non-interactive
+          echo "Rollback complete for ${{ matrix.variant }}"
+
+      # Normal deploy: push a new OTA update
+      - name: Push OTA update for ${{ matrix.variant }}
+        if: ${{ inputs.rollback != true }}
+        working-directory: apps/mobile
+        run: |
+          MSG="${{ inputs.message }}"
+          if [ -z "$MSG" ]; then
+            MSG="OTA update for ${{ matrix.variant }}"
+          fi
+          APP_VARIANT=${{ matrix.variant }} eas update \
+            --branch ${{ inputs.profile }} \
+            --message "$MSG" \
+            --non-interactive
+
+  summary:
+    name: Deploy Summary
+    runs-on: ubuntu-latest
+    needs: [resolve, deploy]
+    if: always()
+    steps:
+      - name: Report
+        run: |
+          echo "## Deploy Summary" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "- **Target:** ${{ inputs.target }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "- **Profile:** ${{ inputs.profile }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "- **Variants:** ${{ needs.resolve.outputs.count }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "- **Rollback:** ${{ inputs.rollback || false }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "- **Message:** ${{ inputs.message || 'OTA update' }}" >> "$GITHUB_STEP_SUMMARY"

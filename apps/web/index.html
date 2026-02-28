@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
+    
+    <!-- PWA & Mobile Web App -->
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="ChefOS" />
+    <meta name="application-name" content="ChefOS" />
+    <meta name="theme-color" content="#0d9488" />
+    <meta name="msapplication-TileColor" content="#0d9488" />
+    
+    <title>ChefOS - Kitchen Management System</title>
+    <meta name="description" content="Professional kitchen management. Recipe costing, prep lists, inventory, food safety — all in one place.">
+    <meta name="author" content="Quiet OS" />
+
+    
+    
+    <link rel="canonical" href="https://chefos.ai/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://chefos.ai/" />
+    <meta property="og:image" content="https://chefos.ai/chefos-og.png">
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@ChefOS" />
+    <meta name="twitter:image" content="https://chefos.ai/chefos-og.png">
+    
+    <!-- Favicon & Icons -->
+    <link rel="icon" type="image/png" href="/chefos-favicon.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json" />
+    
+  
+  
+  
+  <meta property="og:title" content="ChefOS - Kitchen Management System">
+  <meta name="twitter:title" content="ChefOS - Kitchen Management System">
+  <meta property="og:description" content="Professional kitchen management. Recipe costing, prep lists, inventory, food safety — all in one place.">
+  <meta name="twitter:description" content="Professional kitchen management. Recipe costing, prep lists, inventory, food safety — all in one place.">
+</head>
+
+  <body>
+    <div id="root">
+      <div id="app-loader" style="display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:system-ui,sans-serif;background:#faf9f7;color:#5c3d1e">
+        <div style="text-align:center">
+          <div style="font-size:2rem;font-weight:700;margin-bottom:0.5rem">ChefOS</div>
+          <div style="color:#8a7060">Loading...</div>
+        </div>
+      </div>
+    </div>
+    <script>
+      // One-time SW cache bust (v2 — 2026-02-28)
+      // Forces old service worker out so new skipWaiting SW takes over
+      (function(){
+        var BUST_KEY = 'sw_bust_v3';
+        if (!localStorage.getItem(BUST_KEY) && 'serviceWorker' in navigator) {
+          localStorage.setItem(BUST_KEY, '1');
+          navigator.serviceWorker.getRegistrations().then(function(regs) {
+            var p = regs.map(function(r) { return r.unregister(); });
+            return Promise.all(p);
+          }).then(function() {
+            return caches.keys();
+          }).then(function(names) {
+            return Promise.all(names.map(function(n) { return caches.delete(n); }));
+          }).then(function() {
+            location.reload();
+          });
+        }
+      })();
+
+      window.addEventListener('error', function(e) {
+        document.getElementById('app-loader').innerHTML =
+          '<div style="text-align:center;padding:2rem"><h2 style="color:#c53030">App Error</h2><pre style="text-align:left;max-width:600px;overflow:auto;font-size:12px;background:#fee;padding:1rem;border-radius:8px">' +
+          e.message + '\n' + (e.filename || '') + ':' + (e.lineno || '') + '</pre></div>';
+      });
+    </script>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

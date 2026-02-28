@@ -1,0 +1,23 @@
+{
+  "name": "ChefOS - Kitchen Management",
+  "short_name": "ChefOS",
+  "description": "Professional kitchen management. Recipe costing, prep lists, inventory, food safety — all in one place.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0d9488",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/chefos-favicon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/chefos-favicon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ]
+}

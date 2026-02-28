@@ -1,0 +1,1 @@
+ALTER TABLE public.ingredients ADD COLUMN yield_percent numeric DEFAULT 100 NOT NULL;

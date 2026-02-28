@@ -1,0 +1,1 @@
+ALTER TABLE public.organizations ADD COLUMN store_mode text NOT NULL DEFAULT 'restaurant';
