@@ -118,7 +118,7 @@ const navSections: NavSection[] = [
       { title: "Seed Data", href: "/admin/seed", icon: Database },
       { title: "Beta Tracker", href: "/admin/beta", icon: Rocket },
       { title: "ChefOS Brain", href: "/admin/brain", icon: Brain },
-      { title: "NOSH Admin", href: "/admin/nosh", icon: UtensilsCrossed },
+      { title: "Prep Mi Admin", href: "/admin/nosh", icon: UtensilsCrossed },
       { title: "App Launch", href: "/admin/app-launch", icon: ExternalLink },
       { title: "System Tools", href: "/admin/system", icon: Wrench },
       { title: "Dev Launcher", href: "/launch", icon: Rocket },

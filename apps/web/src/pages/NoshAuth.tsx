@@ -1,16 +1,19 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import { Mail, Lock, User, Gift, Loader2, CheckCircle2, Wrench } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import { z } from "zod";
 import { haptic } from "@/lib/haptics";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { PasswordStrengthMeter } from "@/components/landing/PasswordStrengthMeter";
 import noshLogo from "@/assets/nosh-logo.png";
 
 const NOSH = {
   primary: "#D94878",
+  primaryDark: "#C13B68",
   secondary: "#2A1F2D",
   bg: "#FBF6F8",
   card: "#FDFBFC",
@@ -18,6 +21,32 @@ const NOSH = {
   muted: "#7A6B75",
   textMuted: "#A89DA3",
 };
+
+const loginSchema = z.object({
+  email: z.string().email("Please enter a valid email address"),
+  password: z.string().min(1, "Password is required"),
+});
+
+const signupSchema = z.object({
+  name: z.string().min(2, "Name must be at least 2 characters"),
+  email: z.string().email("Please enter a valid email address"),
+  password: z.string().min(8, "Password must be at least 8 characters"),
+});
+
+function friendlyError(msg: string): string {
+  if (msg.includes("Invalid login credentials"))
+    return "That email/password combination didn't work. Double-check and try again.";
+  if (msg.includes("User already registered"))
+    return "Looks like you already have an account! Try logging in instead.";
+  if (msg.includes("Email not confirmed"))
+    return "Please verify your email first. Check your inbox for a verification link.";
+  if (msg.includes("rate limit") || msg.includes("too many"))
+    return "Too many attempts. Please wait a moment and try again.";
+  return msg;
+}
+
+const inputClass =
+  "w-full h-11 pl-10 pr-4 rounded-full text-sm outline-none transition-all bg-white border focus:ring-2 focus:ring-[#D94878]/20 focus:border-[#D94878]";
 
 const NoshSocialLoginButtons = () => {
   const [googleLoading, setGoogleLoading] = useState(false);
@@ -31,7 +60,7 @@ const NoshSocialLoginButtons = () => {
       const { error } = await supabase.auth.signInWithOAuth({
         provider,
         options: {
-          redirectTo: `${window.location.origin}/nosh/auth`,
+          redirectTo: `${window.location.origin}/nosh/welcome`,
         },
       });
       if (error) {
@@ -52,7 +81,7 @@ const NoshSocialLoginButtons = () => {
         type="button"
         onClick={() => handleOAuth("google")}
         disabled={googleLoading || appleLoading}
-        className="w-full h-11 flex items-center justify-center gap-3 rounded-full text-sm font-medium transition-all"
+        className="w-full h-11 flex items-center justify-center gap-3 rounded-full text-sm font-medium transition-all hover:shadow-md"
         style={{ background: "#fff", border: `1px solid ${NOSH.border}`, color: NOSH.secondary }}
       >
         {googleLoading ? (
@@ -72,7 +101,7 @@ const NoshSocialLoginButtons = () => {
         type="button"
         onClick={() => handleOAuth("apple")}
         disabled={googleLoading || appleLoading}
-        className="w-full h-11 flex items-center justify-center gap-3 rounded-full text-sm font-medium transition-all"
+        className="w-full h-11 flex items-center justify-center gap-3 rounded-full text-sm font-medium transition-all hover:shadow-md"
         style={{ background: "#fff", border: `1px solid ${NOSH.border}`, color: NOSH.secondary }}
       >
         {appleLoading ? (
@@ -97,6 +126,12 @@ const NoshSocialLoginButtons = () => {
   );
 };
 
+const formVariants = {
+  enter: (direction: number) => ({ opacity: 0, x: direction > 0 ? 20 : -20 }),
+  center: { opacity: 1, x: 0 },
+  exit: (direction: number) => ({ opacity: 0, x: direction > 0 ? -20 : 20 }),
+};
+
 const NoshAuth = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -105,6 +140,7 @@ const NoshAuth = () => {
   const [activeTab, setActiveTab] = useState<"login" | "signup">(
     searchParams.get("tab") === "signup" || searchParams.get("ref") ? "signup" : "login"
   );
+  const [direction, setDirection] = useState(0);
   const [loginError, setLoginError] = useState<string | null>(null);
   const [signupError, setSignupError] = useState<string | null>(null);
   const [showVerifyEmail, setShowVerifyEmail] = useState(false);
@@ -136,9 +172,16 @@ const NoshAuth = () => {
 
   const signupSource = searchParams.get("source") || "nosh";
 
+  const switchTab = (tab: "login" | "signup") => {
+    setDirection(tab === "signup" ? 1 : -1);
+    setActiveTab(tab);
+    setLoginError(null);
+    setSignupError(null);
+  };
+
   useEffect(() => {
     if (user) {
-      navigate("/dashboard", { replace: true });
+      navigate("/nosh/welcome", { replace: true });
     }
   }, [user, navigate]);
 
@@ -159,21 +202,23 @@ const NoshAuth = () => {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoginError(null);
+
+    const result = loginSchema.safeParse({ email: loginEmail, password: loginPassword });
+    if (!result.success) {
+      setLoginError(result.error.errors[0].message);
+      return;
+    }
+
     haptic("medium");
     setIsLoading(true);
-    setLoginError(null);
     try {
       await signIn(loginEmail, loginPassword);
       haptic("success");
-      navigate("/dashboard");
+      navigate("/nosh/welcome");
     } catch (error: any) {
       haptic("error");
-      const msg = error?.message || "Invalid login credentials";
-      setLoginError(
-        msg.includes("Invalid login credentials")
-          ? "Incorrect email or password. Please try again."
-          : msg
-      );
+      setLoginError(friendlyError(error?.message || "Something went wrong. Please try again."));
     } finally {
       setIsLoading(false);
     }
@@ -181,9 +226,16 @@ const NoshAuth = () => {
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSignupError(null);
+
+    const result = signupSchema.safeParse({ name: signupName, email: signupEmail, password: signupPassword });
+    if (!result.success) {
+      setSignupError(result.error.errors[0].message);
+      return;
+    }
+
     haptic("medium");
     setIsLoading(true);
-    setSignupError(null);
     try {
       await signUp(signupEmail, signupPassword, signupName, signupName + "'s Kitchen", "home_cook", signupSource);
       haptic("success");
@@ -191,12 +243,7 @@ const NoshAuth = () => {
       setShowVerifyEmail(true);
     } catch (error: any) {
       haptic("error");
-      const msg = error?.message || "Something went wrong. Please try again.";
-      setSignupError(
-        msg.includes("User already registered")
-          ? "An account with this email already exists. Please log in instead."
-          : msg
-      );
+      setSignupError(friendlyError(error?.message || "Something went wrong. Please try again."));
     } finally {
       setIsLoading(false);
     }
@@ -205,13 +252,19 @@ const NoshAuth = () => {
   if (showVerifyEmail) {
     return (
       <div className="min-h-screen flex items-center justify-center p-4" style={{ background: NOSH.bg }}>
-        <div className="w-full max-w-md rounded-[20px] p-8 text-center" style={{ background: NOSH.card, border: `1px solid ${NOSH.border}` }}>
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ type: "spring", stiffness: 260, damping: 30 }}
+          className="w-full max-w-md rounded-[20px] p-8 text-center"
+          style={{ background: NOSH.card, border: `1px solid ${NOSH.border}`, boxShadow: "0 20px 60px rgba(217,72,120,0.08), 0 4px 12px rgba(0,0,0,0.04)" }}
+        >
           <div className="flex justify-center mb-4">
             <div className="w-16 h-16 rounded-full flex items-center justify-center" style={{ background: `${NOSH.primary}15` }}>
               <CheckCircle2 className="w-8 h-8" style={{ color: NOSH.primary }} />
             </div>
           </div>
-          <h2 className="text-2xl font-bold mb-2" style={{ color: NOSH.secondary }}>Check Your Email</h2>
+          <h2 className="text-2xl font-bold mb-2" style={{ color: NOSH.secondary, fontFamily: "'Playfair Display', serif" }}>Check your email</h2>
           <p className="text-sm mb-6" style={{ color: NOSH.muted }}>
             We've sent a verification link to <strong style={{ color: NOSH.secondary }}>{verifyEmailAddress}</strong>
           </p>
@@ -219,8 +272,8 @@ const NoshAuth = () => {
             Click the link in the email to verify your account and get started. The link expires in 24 hours.
           </p>
           <button
-            onClick={() => { setShowVerifyEmail(false); setVerifyEmailAddress(""); }}
-            className="w-full py-3 rounded-full text-sm font-semibold transition-all"
+            onClick={() => { setShowVerifyEmail(false); setVerifyEmailAddress(""); switchTab("login"); }}
+            className="w-full py-3 rounded-full text-sm font-semibold transition-all hover:shadow-md"
             style={{ background: "#fff", border: `1px solid ${NOSH.border}`, color: NOSH.secondary }}
           >
             Back to Login
@@ -228,19 +281,33 @@ const NoshAuth = () => {
           <p className="text-xs mt-4" style={{ color: NOSH.textMuted }}>
             Didn't receive it? Check your spam folder or try signing up again.
           </p>
-        </div>
+        </motion.div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4" style={{ background: NOSH.bg }}>
+    <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden" style={{ background: NOSH.bg }}>
+      {/* Background glow */}
+      <div
+        className="fixed top-[-15%] right-[-5%] w-[400px] h-[400px] rounded-full pointer-events-none"
+        style={{ background: `radial-gradient(circle, ${NOSH.primary}06 0%, transparent 70%)` }}
+      />
+      <div
+        className="fixed bottom-[-15%] left-[-5%] w-[400px] h-[400px] rounded-full pointer-events-none"
+        style={{ background: `radial-gradient(circle, rgba(200,180,220,0.06) 0%, transparent 70%)` }}
+      />
+
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ type: "spring", stiffness: 260, damping: 30 }}
-        className="w-full max-w-md rounded-[20px] overflow-hidden"
-        style={{ background: NOSH.card, border: `1px solid ${NOSH.border}` }}
+        className="relative w-full max-w-md rounded-[20px] overflow-hidden"
+        style={{
+          background: NOSH.card,
+          border: `1px solid ${NOSH.border}`,
+          boxShadow: "0 20px 60px rgba(217,72,120,0.08), 0 4px 12px rgba(0,0,0,0.04)",
+        }}
       >
         {/* Header */}
         <div className="text-center pt-8 pb-4 px-8">
@@ -248,17 +315,17 @@ const NoshAuth = () => {
             className="inline-block mb-3 cursor-pointer select-none"
             onClick={handleLogoTap}
           >
-            <img src={noshLogo} alt="NOSH" className="w-20 h-20 rounded-2xl shadow-md mx-auto" />
+            <img src={noshLogo} alt="Prep Mi" className="w-20 h-20 rounded-2xl shadow-md mx-auto" />
           </div>
-          <p className="text-xl font-bold" style={{ color: NOSH.primary, letterSpacing: "6px" }}>NOSH</p>
-          <p className="text-sm mt-1" style={{ color: NOSH.muted }}>Your kitchen, reimagined</p>
+          <p className="text-xl font-bold" style={{ color: NOSH.primary, letterSpacing: "6px" }}>Prep Mi</p>
+          <p className="text-sm mt-1" style={{ color: NOSH.muted }}>Cook smarter. Eat better.</p>
           {showDev && (
             <button
               onClick={async () => {
                 setIsLoading(true);
                 try {
                   await signIn("admin@chefos.app", "ChefOS2026x");
-                  navigate("/dashboard");
+                  navigate("/nosh/welcome");
                 } catch {
                   toast.error("Dev login failed");
                 } finally {
@@ -279,185 +346,229 @@ const NoshAuth = () => {
           )}
         </div>
 
-        {/* Tab Toggle */}
+        {/* Tab Toggle with sliding indicator */}
         <div className="px-8 pb-4">
-          <div className="flex rounded-full p-0.5" style={{ background: `${NOSH.border}` }}>
+          <div className="relative flex rounded-full p-0.5" style={{ background: NOSH.border }}>
+            <motion.div
+              className="absolute top-0.5 bottom-0.5 rounded-full"
+              style={{ background: NOSH.primary, width: "calc(50% - 2px)" }}
+              animate={{ left: activeTab === "login" ? "2px" : "calc(50% + 2px)" }}
+              transition={{ type: "spring", stiffness: 400, damping: 35 }}
+            />
             <button
-              onClick={() => setActiveTab("login")}
-              className="flex-1 py-2 rounded-full text-xs font-semibold transition-all"
-              style={{
-                background: activeTab === "login" ? NOSH.primary : "transparent",
-                color: activeTab === "login" ? "#fff" : NOSH.muted,
-              }}
+              onClick={() => switchTab("login")}
+              className="relative z-10 flex-1 py-2 rounded-full text-xs font-semibold transition-colors"
+              style={{ color: activeTab === "login" ? "#fff" : NOSH.muted }}
             >
               Login
             </button>
             <button
-              onClick={() => setActiveTab("signup")}
-              className="flex-1 py-2 rounded-full text-xs font-semibold transition-all"
-              style={{
-                background: activeTab === "signup" ? NOSH.primary : "transparent",
-                color: activeTab === "signup" ? "#fff" : NOSH.muted,
-              }}
+              onClick={() => switchTab("signup")}
+              className="relative z-10 flex-1 py-2 rounded-full text-xs font-semibold transition-colors"
+              style={{ color: activeTab === "signup" ? "#fff" : NOSH.muted }}
             >
               Sign Up
             </button>
           </div>
         </div>
 
-        {/* Form Content */}
+        {/* Form Content with animated transitions */}
         <div className="px-8 pb-8">
           <NoshSocialLoginButtons />
 
-          {activeTab === "login" ? (
-            <form onSubmit={handleLogin} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="nosh-login-email" className="text-xs font-medium" style={{ color: NOSH.secondary }}>Email</Label>
-                <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: NOSH.textMuted }} />
-                  <input
-                    id="nosh-login-email"
-                    type="email"
-                    placeholder="you@email.com"
-                    className="w-full h-11 pl-10 pr-4 rounded-full text-sm outline-none transition-all focus:ring-2"
-                    style={{ background: "#fff", border: `1px solid ${NOSH.border}`, color: NOSH.secondary, focusRingColor: NOSH.primary } as any}
-                    value={loginEmail}
-                    onChange={(e) => setLoginEmail(e.target.value)}
-                    required
-                  />
-                </div>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="nosh-login-password" className="text-xs font-medium" style={{ color: NOSH.secondary }}>Password</Label>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: NOSH.textMuted }} />
-                  <input
-                    id="nosh-login-password"
-                    type="password"
-                    placeholder="••••••••"
-                    className="w-full h-11 pl-10 pr-4 rounded-full text-sm outline-none transition-all"
-                    style={{ background: "#fff", border: `1px solid ${NOSH.border}`, color: NOSH.secondary }}
-                    value={loginPassword}
-                    onChange={(e) => setLoginPassword(e.target.value)}
-                    required
-                  />
-                </div>
-              </div>
-              {loginError && (
-                <div className="rounded-xl px-4 py-3 text-sm flex items-start gap-2" style={{ background: "#FEE2E2", color: "#DC2626" }}>
-                  <span className="mt-0.5">⚠️</span>
-                  <span>{loginError}</span>
-                </div>
-              )}
-              <motion.div whileTap={{ scale: 0.97 }} transition={{ type: "spring", stiffness: 400, damping: 17 }}>
-                <button
-                  type="submit"
-                  disabled={isLoading}
-                  className="w-full py-3 rounded-full text-sm font-semibold text-white transition-all disabled:opacity-50"
-                  style={{ background: NOSH.primary }}
-                >
-                  {isLoading ? (
-                    <span className="flex items-center justify-center gap-2">
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                      Signing in...
-                    </span>
-                  ) : "Sign In"}
-                </button>
-              </motion.div>
-              <button
-                type="button"
-                onClick={() => navigate("/reset-password")}
-                className="text-xs w-full text-center mt-2 hover:underline"
-                style={{ color: NOSH.primary }}
+          <AnimatePresence mode="wait" custom={direction}>
+            {activeTab === "login" ? (
+              <motion.form
+                key="login"
+                custom={direction}
+                variants={formVariants}
+                initial="enter"
+                animate="center"
+                exit="exit"
+                transition={{ duration: 0.2, ease: "easeInOut" }}
+                onSubmit={handleLogin}
+                className="space-y-4"
               >
-                Forgot password?
-              </button>
-            </form>
-          ) : (
-            <form onSubmit={handleSignup} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="nosh-signup-name" className="text-xs font-medium" style={{ color: NOSH.secondary }}>Your Name</Label>
-                <div className="relative">
-                  <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: NOSH.textMuted }} />
-                  <input
-                    id="nosh-signup-name"
-                    type="text"
-                    placeholder="Your name"
-                    className="w-full h-11 pl-10 pr-4 rounded-full text-sm outline-none transition-all"
-                    style={{ background: "#fff", border: `1px solid ${NOSH.border}`, color: NOSH.secondary }}
-                    value={signupName}
-                    onChange={(e) => setSignupName(e.target.value)}
-                    required
-                  />
+                <div className="space-y-2">
+                  <Label htmlFor="nosh-login-email" className="text-xs font-medium" style={{ color: NOSH.secondary }}>Email</Label>
+                  <div className="relative">
+                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: NOSH.textMuted }} />
+                    <input
+                      id="nosh-login-email"
+                      type="email"
+                      placeholder="you@email.com"
+                      className={inputClass}
+                      style={{ borderColor: NOSH.border, color: NOSH.secondary }}
+                      value={loginEmail}
+                      onChange={(e) => setLoginEmail(e.target.value)}
+                      required
+                    />
+                  </div>
                 </div>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="nosh-signup-email" className="text-xs font-medium" style={{ color: NOSH.secondary }}>Email</Label>
-                <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: NOSH.textMuted }} />
-                  <input
-                    id="nosh-signup-email"
-                    type="email"
-                    placeholder="you@email.com"
-                    className="w-full h-11 pl-10 pr-4 rounded-full text-sm outline-none transition-all"
-                    style={{ background: "#fff", border: `1px solid ${NOSH.border}`, color: NOSH.secondary }}
-                    value={signupEmail}
-                    onChange={(e) => setSignupEmail(e.target.value)}
-                    required
-                  />
+                <div className="space-y-2">
+                  <Label htmlFor="nosh-login-password" className="text-xs font-medium" style={{ color: NOSH.secondary }}>Password</Label>
+                  <div className="relative">
+                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: NOSH.textMuted }} />
+                    <input
+                      id="nosh-login-password"
+                      type="password"
+                      placeholder="Your password"
+                      className={inputClass}
+                      style={{ borderColor: NOSH.border, color: NOSH.secondary }}
+                      value={loginPassword}
+                      onChange={(e) => setLoginPassword(e.target.value)}
+                      required
+                    />
+                  </div>
                 </div>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="nosh-signup-password" className="text-xs font-medium" style={{ color: NOSH.secondary }}>Password</Label>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: NOSH.textMuted }} />
-                  <input
-                    id="nosh-signup-password"
-                    type="password"
-                    placeholder="••••••••"
-                    className="w-full h-11 pl-10 pr-4 rounded-full text-sm outline-none transition-all"
-                    style={{ background: "#fff", border: `1px solid ${NOSH.border}`, color: NOSH.secondary }}
-                    value={signupPassword}
-                    onChange={(e) => setSignupPassword(e.target.value)}
-                    required
-                    minLength={6}
-                  />
-                </div>
-              </div>
-              {referralCode && (
-                <div className="flex items-center gap-2 p-3 rounded-xl text-sm" style={{ background: `${NOSH.primary}08`, border: `1px solid ${NOSH.primary}20` }}>
-                  <Gift className="w-4 h-4" style={{ color: NOSH.primary }} />
-                  <span style={{ color: NOSH.muted }}>
-                    Referral code: <strong>{referralCode}</strong>
-                  </span>
-                </div>
-              )}
-              {signupError && (
-                <div className="rounded-xl px-4 py-3 text-sm flex items-start gap-2" style={{ background: "#FEE2E2", color: "#DC2626" }}>
-                  <span className="mt-0.5">⚠️</span>
-                  <span>{signupError}</span>
-                </div>
-              )}
-              <motion.div whileTap={{ scale: 0.97 }} transition={{ type: "spring", stiffness: 400, damping: 17 }}>
+
+                <AnimatePresence>
+                  {loginError && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="rounded-xl px-4 py-3 text-sm flex items-start gap-2 overflow-hidden"
+                      style={{ background: "#FEE2E2", color: "#DC2626" }}
+                    >
+                      <span className="shrink-0 mt-0.5 text-xs">!</span>
+                      <span>{loginError}</span>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                <motion.div whileTap={{ scale: 0.97 }} transition={{ type: "spring", stiffness: 400, damping: 17 }}>
+                  <button
+                    type="submit"
+                    disabled={isLoading}
+                    className="w-full py-3 rounded-full text-sm font-semibold text-white transition-all disabled:opacity-50 hover:opacity-90"
+                    style={{ background: `linear-gradient(135deg, ${NOSH.primary}, ${NOSH.primaryDark})` }}
+                  >
+                    {isLoading ? (
+                      <span className="flex items-center justify-center gap-2">
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        Signing in...
+                      </span>
+                    ) : "Sign In"}
+                  </button>
+                </motion.div>
                 <button
-                  type="submit"
-                  disabled={isLoading}
-                  className="w-full py-3 rounded-full text-sm font-semibold text-white transition-all disabled:opacity-50"
-                  style={{ background: NOSH.primary }}
+                  type="button"
+                  onClick={() => navigate("/reset-password?source=nosh")}
+                  className="text-xs w-full text-center mt-2 hover:underline"
+                  style={{ color: NOSH.primary }}
                 >
-                  {isLoading ? (
-                    <span className="flex items-center justify-center gap-2">
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                      Creating account...
-                    </span>
-                  ) : "Create Account"}
+                  Forgot password?
                 </button>
-              </motion.div>
-              <p className="text-xs text-center" style={{ color: NOSH.textMuted }}>
-                Start discovering recipes, deals & more
-              </p>
-            </form>
-          )}
+              </motion.form>
+            ) : (
+              <motion.form
+                key="signup"
+                custom={direction}
+                variants={formVariants}
+                initial="enter"
+                animate="center"
+                exit="exit"
+                transition={{ duration: 0.2, ease: "easeInOut" }}
+                onSubmit={handleSignup}
+                className="space-y-4"
+              >
+                <div className="space-y-2">
+                  <Label htmlFor="nosh-signup-name" className="text-xs font-medium" style={{ color: NOSH.secondary }}>Your Name</Label>
+                  <div className="relative">
+                    <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: NOSH.textMuted }} />
+                    <input
+                      id="nosh-signup-name"
+                      type="text"
+                      placeholder="Your name"
+                      className={inputClass}
+                      style={{ borderColor: NOSH.border, color: NOSH.secondary }}
+                      value={signupName}
+                      onChange={(e) => setSignupName(e.target.value)}
+                      required
+                    />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="nosh-signup-email" className="text-xs font-medium" style={{ color: NOSH.secondary }}>Email</Label>
+                  <div className="relative">
+                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: NOSH.textMuted }} />
+                    <input
+                      id="nosh-signup-email"
+                      type="email"
+                      placeholder="you@email.com"
+                      className={inputClass}
+                      style={{ borderColor: NOSH.border, color: NOSH.secondary }}
+                      value={signupEmail}
+                      onChange={(e) => setSignupEmail(e.target.value)}
+                      required
+                    />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="nosh-signup-password" className="text-xs font-medium" style={{ color: NOSH.secondary }}>Password</Label>
+                  <div className="relative">
+                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: NOSH.textMuted }} />
+                    <input
+                      id="nosh-signup-password"
+                      type="password"
+                      placeholder="8+ characters"
+                      className={inputClass}
+                      style={{ borderColor: NOSH.border, color: NOSH.secondary }}
+                      value={signupPassword}
+                      onChange={(e) => setSignupPassword(e.target.value)}
+                      required
+                      minLength={8}
+                    />
+                  </div>
+                  <PasswordStrengthMeter password={signupPassword} />
+                </div>
+
+                {referralCode && (
+                  <div className="flex items-center gap-2 p-3 rounded-xl text-sm" style={{ background: `${NOSH.primary}08`, border: `1px solid ${NOSH.primary}20` }}>
+                    <Gift className="w-4 h-4" style={{ color: NOSH.primary }} />
+                    <span style={{ color: NOSH.muted }}>
+                      Referral code: <strong>{referralCode}</strong>
+                    </span>
+                  </div>
+                )}
+
+                <AnimatePresence>
+                  {signupError && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="rounded-xl px-4 py-3 text-sm flex items-start gap-2 overflow-hidden"
+                      style={{ background: "#FEE2E2", color: "#DC2626" }}
+                    >
+                      <span className="shrink-0 mt-0.5 text-xs">!</span>
+                      <span>{signupError}</span>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                <motion.div whileTap={{ scale: 0.97 }} transition={{ type: "spring", stiffness: 400, damping: 17 }}>
+                  <button
+                    type="submit"
+                    disabled={isLoading}
+                    className="w-full py-3 rounded-full text-sm font-semibold text-white transition-all disabled:opacity-50 hover:opacity-90"
+                    style={{ background: `linear-gradient(135deg, ${NOSH.primary}, ${NOSH.primaryDark})` }}
+                  >
+                    {isLoading ? (
+                      <span className="flex items-center justify-center gap-2">
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        Creating account...
+                      </span>
+                    ) : "Create Account"}
+                  </button>
+                </motion.div>
+                <p className="text-xs text-center" style={{ color: NOSH.textMuted }}>
+                  Start discovering recipes, deals & more
+                </p>
+              </motion.form>
+            )}
+          </AnimatePresence>
         </div>
 
         {/* Admin spanner */}

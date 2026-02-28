@@ -115,10 +115,10 @@ const NoshAdmin = () => {
         style={{ background: "rgba(251,246,248,0.85)", borderBottom: `1px solid ${NOSH.border}` }}
       >
         <div className="flex items-center gap-3">
-          <img src={noshLogo} alt="NOSH" className="w-10 h-10 rounded-xl" />
+          <img src={noshLogo} alt="Prep Mi" className="w-10 h-10 rounded-xl" />
           <div>
             <h1 className="text-lg font-bold" style={{ color: NOSH.secondary }}>
-              NOSH <span className="font-normal" style={{ color: NOSH.muted }}>Admin</span>
+              Prep Mi <span className="font-normal" style={{ color: NOSH.muted }}>Admin</span>
             </h1>
           </div>
         </div>
@@ -195,7 +195,7 @@ const NoshAdmin = () => {
             className="text-xs hover:underline"
             style={{ color: NOSH.textMuted }}
           >
-            NOSH Login
+            Prep Mi Login
           </Link>
           <span style={{ color: NOSH.border }}>|</span>
           <Link

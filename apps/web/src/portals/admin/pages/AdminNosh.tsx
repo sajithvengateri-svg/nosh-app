@@ -38,7 +38,7 @@ const AdminNosh = () => {
         </div>
         <Button variant="outline" className="gap-2" asChild>
           <a href="https://nosh.chefos.ai/admin" target="_blank" rel="noopener noreferrer">
-            Open NOSH Admin
+            Open Prep Mi Admin
             <ExternalLink className="w-4 h-4" />
           </a>
         </Button>
@@ -62,7 +62,7 @@ const AdminNosh = () => {
 
       <Card className="border-dashed border-orange-500/30 bg-orange-500/5">
         <CardContent className="py-6 text-center text-sm text-muted-foreground">
-          NOSH runs as an independent app with its own admin panel.
+          Prep Mi runs as an independent app with its own admin panel.
           <br />
           This page is a quick-access hub from ChefOS Control Center.
         </CardContent>

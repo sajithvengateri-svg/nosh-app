@@ -57,6 +57,7 @@ import NoshConsumerLanding from "./pages/NoshConsumerLanding";
 import NoshVendorLanding from "./pages/NoshVendorLanding";
 import NoshAuth from "./pages/NoshAuth";
 import NoshAdmin from "./pages/NoshAdmin";
+import NoshWelcome from "./pages/NoshWelcome";
 import MoneyLiteDashboard from "./portals/money/components/MoneyLiteDashboard";
 import ReferAndSave from "./pages/ReferAndSave";
 import Download from "./pages/Download";
@@ -391,6 +392,7 @@ const App = () => (
               <Route path="/nosh/vendors" element={<NoshVendorLanding />} />
               <Route path="/nosh/auth" element={<NoshAuth />} />
               <Route path="/nosh/admin" element={<NoshAdmin />} />
+              <Route path="/nosh/welcome" element={<NoshWelcome />} />
               <Route path="/food-safety" element={<FoodSafetyLanding />} />
               <Route path="/chefos-india" element={<IndianChefOSLanding />} />
               <Route path="/chefos-gcc" element={<GCCChefOSLanding />} />

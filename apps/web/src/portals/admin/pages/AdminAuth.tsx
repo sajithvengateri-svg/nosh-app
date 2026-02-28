@@ -38,7 +38,7 @@ const QUICK_NAV = [
   { label: "Release Manager", href: "/admin/releases", icon: Rocket, color: "text-orange-400" },
   { label: "Vendor Deals", href: "/admin/vendor-deals", icon: Tag, color: "text-cyan-400" },
   { label: "AI Usage", href: "/admin/ai-usage", icon: Activity, color: "text-rose-400" },
-  { label: "NOSH Admin", href: "/admin/nosh", icon: ChefHat, color: "text-amber-400" },
+  { label: "Prep Mi Admin", href: "/admin/nosh", icon: ChefHat, color: "text-amber-400" },
   { label: "Domain Links", href: "/admin/domain-links", icon: Globe, color: "text-teal-400" },
 ];
 

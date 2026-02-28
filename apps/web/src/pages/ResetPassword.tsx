@@ -60,7 +60,7 @@ const ResetPassword = () => {
       const { error } = await supabase.auth.updateUser({ password });
       if (error) throw error;
       toast.success("Password updated successfully!");
-      navigate("/auth");
+      navigate(portalPath);
     } catch (error: any) {
       toast.error(error.message || "Failed to update password");
     } finally {
@@ -68,21 +68,33 @@ const ResetPassword = () => {
     }
   };
 
-  const portalPath = searchParams.get("portal") === "admin" ? "/admin/auth" : "/auth";
+  const source = searchParams.get("source");
+  const isNosh = source === "nosh";
+  const portalPath = isNosh ? "/nosh/auth" : searchParams.get("portal") === "admin" ? "/admin/auth" : "/auth";
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
-      <Card className="w-full max-w-md">
+    <div
+      className="min-h-screen flex items-center justify-center p-4"
+      style={isNosh ? { background: "#FBF6F8" } : undefined}
+      {...(!isNosh ? { className: "min-h-screen bg-background flex items-center justify-center p-4" } : {})}
+    >
+      <Card className="w-full max-w-md" style={isNosh ? { background: "#FDFBFC", border: "1px solid rgba(232,221,226,0.5)", borderRadius: "20px" } : undefined}>
         <CardHeader className="text-center">
           <div className="flex justify-center mb-4">
-            <div className="w-16 h-16 rounded-2xl bg-primary flex items-center justify-center">
-              <ChefHat className="w-10 h-10 text-primary-foreground" />
-            </div>
+            {isNosh ? (
+              <div className="w-16 h-16 rounded-full flex items-center justify-center" style={{ background: "#D9487815" }}>
+                <Lock className="w-8 h-8" style={{ color: "#D94878" }} />
+              </div>
+            ) : (
+              <div className="w-16 h-16 rounded-2xl bg-primary flex items-center justify-center">
+                <ChefHat className="w-10 h-10 text-primary-foreground" />
+              </div>
+            )}
           </div>
-          <CardTitle className="text-2xl font-display">
+          <CardTitle className="text-2xl font-display" style={isNosh ? { color: "#2A1F2D", fontFamily: "'Playfair Display', serif" } : undefined}>
             {mode === "request" ? "Reset Password" : "Set New Password"}
           </CardTitle>
-          <CardDescription>
+          <CardDescription style={isNosh ? { color: "#7A6B75" } : undefined}>
             {mode === "request"
               ? "Enter your email to receive a reset link"
               : "Choose a new password for your account"}
@@ -98,7 +110,7 @@ const ResetPassword = () => {
                   <Input
                     id="reset-email"
                     type="email"
-                    placeholder="chef@kitchen.com"
+                    placeholder={isNosh ? "you@email.com" : "chef@kitchen.com"}
                     className="pl-10"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}

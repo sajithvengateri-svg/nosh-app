@@ -260,7 +260,7 @@ export default function NoshVendorLanding() {
           </FadeUp>
           <FadeUp delay={0.15}>
             <p className="mt-4 text-base md:text-lg" style={{ color: "#7A6B75" }}>
-              Push deals, track demand, and grow your brand with NOSH.
+              Push deals, track demand, and grow your brand with Prep Mi.
             </p>
           </FadeUp>
           <FadeUp delay={0.3}>
@@ -439,7 +439,7 @@ export default function NoshVendorLanding() {
               Start reaching Brisbane home cooks today
             </h2>
             <p className="mt-3 text-sm" style={{ color: "#7A6B75" }}>
-              Join the NOSH vendor network — free to sign up, pay only when deals convert.
+              Join the Prep Mi vendor network — free to sign up, pay only when deals convert.
             </p>
             <div className="mt-6 flex flex-col sm:flex-row items-center justify-center gap-3">
               <Link
