@@ -207,7 +207,7 @@ const Dashboard = () => {
 
   // EatSafe / compliance mode → currently mobile-only via APP_VARIANT.
   // TODO: Add compliance detection for web (e.g. org.compliance_framework flag)
-  if (storeMode === ("food_safety" as any)) {
+  if (storeMode === "food_safety") {
     return (
       <AppLayout>
         <AppWalkthrough

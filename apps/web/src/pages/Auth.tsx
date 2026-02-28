@@ -115,10 +115,18 @@ const Auth = () => {
   const [signupName, setSignupName] = useState("");
   const [signupOrgName, setSignupOrgName] = useState("");
 
-  // Detect home cook mode and signup source
+  // Detect mode and signup source
   const isHomeCook = searchParams.get("mode") === "home_cook";
   const signupSource = searchParams.get("source") || undefined;
   const defaultTab = searchParams.get("tab") || (referralCode ? "signup" : "login");
+
+  // Derive store_mode from source/mode params
+  const isFoodSafetySource = signupSource?.includes("food_safety") ?? false;
+  const derivedStoreMode = isHomeCook
+    ? "home_cook"
+    : isFoodSafetySource
+    ? "food_safety"
+    : undefined;
 
   // Redirect if already logged in
   useEffect(() => {
@@ -174,7 +182,7 @@ const Auth = () => {
     setIsLoading(true);
     setSignupError(null);
     try {
-      await signUp(signupEmail, signupPassword, signupName, signupOrgName, isHomeCook ? "home_cook" : undefined, signupSource);
+      await signUp(signupEmail, signupPassword, signupName, signupOrgName, derivedStoreMode, signupSource);
       haptic("success");
       setVerifyEmailAddress(signupEmail);
       setShowVerifyEmail(true);

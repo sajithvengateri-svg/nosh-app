@@ -6,6 +6,7 @@ import type { StoreMode } from "./types/store.types";
  */
 export const MODE_MODULES: Record<StoreMode, string[] | null> = {
   home_cook: ["chef", "money", "quiet"],
+  food_safety: ["chef", "quiet"],
   restaurant: null,
   cafe: null,
   bar: null,
@@ -29,6 +30,13 @@ export const MODE_FEATURES: Record<StoreMode, string[] | null> = {
     "settings",
     "feedback",
     "games",
+  ],
+  food_safety: [
+    "dashboard",
+    "food-safety",
+    "training",
+    "settings",
+    "feedback",
   ],
   restaurant: null,
   cafe: null,
@@ -58,4 +66,9 @@ export function isFeatureAvailable(featureSlug: string, mode: StoreMode): boolea
 /** Is this mode the "lite" home cook experience? */
 export function isHomeCookMode(mode: StoreMode): boolean {
   return mode === "home_cook";
+}
+
+/** Is this mode the food safety / compliance experience? */
+export function isEatSafeMode(mode: StoreMode): boolean {
+  return mode === "food_safety";
 }
