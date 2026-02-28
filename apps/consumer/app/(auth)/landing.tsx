@@ -1,275 +1,79 @@
-import { useRef, useEffect } from "react";
+import { useState } from "react";
 import {
   View,
   Text,
   Pressable,
-  Animated,
-  Dimensions,
   Platform,
   StyleSheet,
-  Image,
+  ActivityIndicator,
 } from "react-native";
+import { WebView } from "react-native-webview";
 import { router } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { LinearGradient } from "expo-linear-gradient";
 import { Wrench } from "lucide-react-native";
 import * as Linking from "expo-linking";
 import { Colors, Glass } from "../../src/constants/colors";
 import { useDevAccess } from "../../src/lib/devAccess";
 
-const { width: SCREEN_W, height: SCREEN_H } = Dimensions.get("window");
-
-let NOSH_LOGO: any = null;
-try {
-  NOSH_LOGO = require("../../assets/nosh-logo.png");
-} catch {}
-
-// ── Bubble config ─────────────────────────────────────────────────
-interface BubbleConfig {
-  id: number;
-  size: number;
-  startX: number;
-  startY: number;
-  speed: number;
-  delay: number;
-  drift: number;
-}
-
-function generateBubbles(): BubbleConfig[] {
-  const bubbles: BubbleConfig[] = [];
-  for (let i = 0; i < 14; i++) {
-    bubbles.push({
-      id: i,
-      size: 20 + Math.random() * 60,
-      startX: Math.random() * (SCREEN_W - 80),
-      startY: SCREEN_H * (0.3 + Math.random() * 0.7),
-      speed: 6000 + Math.random() * 6000,
-      delay: Math.random() * 4000,
-      drift: 15 + Math.random() * 30,
-    });
-  }
-  return bubbles;
-}
-
-const BUBBLES = generateBubbles();
-
-// ── Soap Bubble Component ─────────────────────────────────────────
-function SoapBubble({ size, startX, startY, speed, delay, drift }: Omit<BubbleConfig, "id">) {
-  const translateY = useRef(new Animated.Value(startY)).current;
-  const translateX = useRef(new Animated.Value(0)).current;
-  const scale = useRef(new Animated.Value(1)).current;
-  const opacity = useRef(new Animated.Value(0)).current;
-
-  useEffect(() => {
-    const fadeIn = Animated.timing(opacity, {
-      toValue: 0.4 + Math.random() * 0.35,
-      duration: 800,
-      delay,
-      useNativeDriver: true,
-    });
-
-    const floatUp = Animated.loop(
-      Animated.timing(translateY, {
-        toValue: -size * 1.5,
-        duration: speed,
-        useNativeDriver: true,
-      })
-    );
-
-    const sineWave = Animated.loop(
-      Animated.sequence([
-        Animated.timing(translateX, {
-          toValue: drift,
-          duration: speed * 0.5,
-          useNativeDriver: true,
-        }),
-        Animated.timing(translateX, {
-          toValue: -drift,
-          duration: speed * 0.5,
-          useNativeDriver: true,
-        }),
-      ])
-    );
-
-    const pulse = Animated.loop(
-      Animated.sequence([
-        Animated.timing(scale, {
-          toValue: 1.08,
-          duration: 2000 + Math.random() * 1000,
-          useNativeDriver: true,
-        }),
-        Animated.timing(scale, {
-          toValue: 0.95,
-          duration: 2000 + Math.random() * 1000,
-          useNativeDriver: true,
-        }),
-      ])
-    );
-
-    const timer = setTimeout(() => {
-      fadeIn.start();
-      floatUp.start();
-      sineWave.start();
-      pulse.start();
-    }, delay);
-
-    // Reset loop: when float completes one cycle, snap back
-    const resetInterval = setInterval(() => {
-      translateY.setValue(startY);
-    }, speed + delay);
-
-    return () => {
-      clearTimeout(timer);
-      clearInterval(resetInterval);
-      floatUp.stop();
-      sineWave.stop();
-      pulse.stop();
-    };
-  }, []);
-
-  const webGlass: any =
-    Platform.OS === "web"
-      ? { backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)" }
-      : {};
-
-  return (
-    <Animated.View
-      style={[
-        {
-          position: "absolute",
-          left: startX,
-          width: size,
-          height: size,
-          borderRadius: size / 2,
-          backgroundColor: Glass.surface,
-          borderWidth: 1,
-          borderColor: Glass.borderLight,
-          opacity,
-          transform: [{ translateY }, { translateX }, { scale }],
-        },
-        webGlass,
-      ]}
-    />
-  );
-}
+const LANDING_URL = "https://chefos.ai/nosh";
 
 // ═══════════════════════════════════════════════════════════════════
-// ── LANDING SCREEN ───────────────────────────────────────────────
+// ── LANDING SCREEN — WebView + native auth overlay
 // ═══════════════════════════════════════════════════════════════════
 export default function LandingScreen() {
   const insets = useSafeAreaInsets();
   const enableDev = useDevAccess((s) => s.enable);
+  const [loading, setLoading] = useState(true);
 
-  // ── Center content entrance ──
-  // Start at visible values so content shows even if animations fail on web
-  const contentScale = useRef(new Animated.Value(Platform.OS === "web" ? 1 : 0.5)).current;
-  const contentOpacity = useRef(new Animated.Value(Platform.OS === "web" ? 1 : 0)).current;
-  const ctaOpacity = useRef(new Animated.Value(Platform.OS === "web" ? 1 : 0)).current;
-  const ctaY = useRef(new Animated.Value(0)).current;
-
-  useEffect(() => {
-    if (Platform.OS === "web") return; // Skip animations on web — already visible
-    // Logo + brand entrance
-    Animated.parallel([
-      Animated.spring(contentScale, {
-        toValue: 1,
-        speed: 6,
-        bounciness: 8,
-        useNativeDriver: true,
-      }),
-      Animated.timing(contentOpacity, {
-        toValue: 1,
-        duration: 600,
-        useNativeDriver: true,
-      }),
-    ]).start();
-
-    // CTA buttons fade in after a beat
-    setTimeout(() => {
-      Animated.parallel([
-        Animated.timing(ctaOpacity, {
-          toValue: 1,
-          duration: 500,
-          useNativeDriver: true,
-        }),
-        Animated.spring(ctaY, {
-          toValue: 0,
-          speed: 10,
-          bounciness: 6,
-          useNativeDriver: true,
-        }),
-      ]).start();
-    }, 600);
-  }, []);
+  // Web: just redirect to the landing page
+  if (Platform.OS === "web") {
+    return (
+      <View style={[styles.root, { justifyContent: "center", alignItems: "center" }]}>
+        <Text style={{ color: Colors.text.muted, fontSize: 14 }}>Redirecting...</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.root}>
-      {/* Background gradient */}
-      <LinearGradient
-        colors={[Colors.background, "#F5E8EF"]}
-        start={{ x: 0.5, y: 0 }}
-        end={{ x: 0.5, y: 1 }}
-        style={StyleSheet.absoluteFill}
+      {/* WebView loads the consumer landing page */}
+      <WebView
+        source={{ uri: LANDING_URL }}
+        style={styles.webview}
+        onLoadEnd={() => setLoading(false)}
+        scrollEnabled={true}
+        showsVerticalScrollIndicator={false}
+        javaScriptEnabled={true}
+        domStorageEnabled={true}
+        startInLoadingState={false}
+        // Intercept link taps — don't navigate away
+        onShouldStartLoadWithRequest={(request) => {
+          if (request.url === LANDING_URL || request.url.startsWith(LANDING_URL)) return true;
+          // Auth links → handle natively
+          if (request.url.includes("/auth")) {
+            router.push("/(auth)/signup");
+            return false;
+          }
+          if (request.url.includes("/vendor")) {
+            Linking.openURL(request.url);
+            return false;
+          }
+          return false;
+        }}
       />
 
-      {/* Soap bubbles */}
-      {BUBBLES.map((b) => (
-        <SoapBubble
-          key={b.id}
-          size={b.size}
-          startX={b.startX}
-          startY={b.startY}
-          speed={b.speed}
-          delay={b.delay}
-          drift={b.drift}
-        />
-      ))}
-
-      {/* Center content */}
-      <Animated.View
-        style={[
-          styles.centerContent,
-          {
-            opacity: contentOpacity,
-            transform: [{ scale: contentScale }],
-          },
-        ]}
-      >
-        {/* Logo circle */}
-        <View style={styles.logoCircle}>
-          {NOSH_LOGO ? (
-            <Image
-              source={NOSH_LOGO}
-              style={styles.logoImage}
-              resizeMode="cover"
-            />
-          ) : (
-            <Text style={styles.logoFallback}>N</Text>
-          )}
+      {/* Loading spinner */}
+      {loading && (
+        <View style={styles.loadingOverlay}>
+          <ActivityIndicator size="large" color={Colors.primary} />
         </View>
+      )}
 
-        {/* Brand name */}
-        <Text style={styles.brandText}>NOSH</Text>
-
-        {/* Tagline */}
-        <Text style={styles.tagline}>Your AI cooking companion</Text>
-
-        {/* Sub-tagline */}
-        <Text style={styles.subTagline}>
-          Know your nosh. Know your prices.{"\n"}
-          One pot. Six ingredients. Sorted.
-        </Text>
-      </Animated.View>
-
-      {/* Bottom CTA section */}
-      <Animated.View
+      {/* Bottom CTA overlay — glass bar with auth buttons */}
+      <View
         style={[
-          styles.ctaContainer,
-          {
-            paddingBottom: insets.bottom + 20,
-            opacity: ctaOpacity,
-            transform: [{ translateY: ctaY }],
-          },
+          styles.ctaBar,
+          { paddingBottom: insets.bottom + 12 },
         ]}
       >
         {/* Get Started */}
@@ -304,9 +108,9 @@ export default function LandingScreen() {
         >
           <Text style={styles.btnDevText}>Dev Access</Text>
         </Pressable>
-      </Animated.View>
+      </View>
 
-      {/* Admin spanner footer */}
+      {/* Admin spanner */}
       <Pressable
         onPress={() => Linking.openURL("https://nosh-admin-eight.vercel.app")}
         style={({ pressed }) => [
@@ -327,103 +131,60 @@ const styles = StyleSheet.create({
   root: {
     flex: 1,
     backgroundColor: Colors.background,
-    overflow: "hidden",
   },
-  centerContent: {
+  webview: {
     flex: 1,
+  },
+  loadingOverlay: {
+    ...StyleSheet.absoluteFillObject,
     justifyContent: "center",
     alignItems: "center",
-    paddingHorizontal: 32,
-    zIndex: 2,
+    backgroundColor: Colors.background,
   },
-  logoCircle: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    overflow: "hidden",
-    backgroundColor: Glass.surface,
-    borderWidth: 1,
-    borderColor: Glass.borderLight,
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: 24,
-  },
-  logoImage: {
-    width: 144,
-    height: 144,
-    borderRadius: 72,
-  },
-  logoFallback: {
-    fontSize: 48,
-    fontWeight: "800",
-    color: Colors.primary,
-  },
-  brandText: {
-    fontSize: 52,
-    fontWeight: "800",
-    color: Colors.secondary,
-    letterSpacing: 10,
-    textAlign: "center",
-  },
-  tagline: {
-    fontSize: 18,
-    fontWeight: "600",
-    color: Colors.primary,
-    textAlign: "center",
-    marginTop: 12,
-  },
-  subTagline: {
-    fontSize: 14,
-    color: Colors.text.secondary,
-    textAlign: "center",
-    lineHeight: 22,
-    marginTop: 12,
-    paddingHorizontal: 16,
-  },
-  ctaContainer: {
-    width: "100%",
+  ctaBar: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: "rgba(251,246,248,0.92)",
+    paddingTop: 16,
     paddingHorizontal: 32,
     alignItems: "center",
-    gap: 12,
-    zIndex: 2,
+    gap: 8,
+    borderTopWidth: 1,
+    borderTopColor: "rgba(232,221,226,0.5)",
   },
   btnGetStarted: {
     width: "100%",
     maxWidth: 340,
-    backgroundColor: Glass.surface,
-    paddingVertical: 16,
+    backgroundColor: Colors.primary,
+    paddingVertical: 14,
     borderRadius: 28,
-    borderWidth: 1,
-    borderColor: Glass.borderLight,
     alignItems: "center",
-    ...(Platform.OS === "web"
-      ? ({ backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)" } as any)
-      : {}),
   },
   btnGetStartedText: {
-    color: Colors.secondary,
-    fontSize: 17,
+    color: "#fff",
+    fontSize: 16,
     fontWeight: "700",
     letterSpacing: 0.5,
   },
   btnAccount: {
-    paddingVertical: 12,
+    paddingVertical: 8,
     alignItems: "center",
   },
   btnAccountText: {
     color: Colors.text.secondary,
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: "500",
   },
   btnDev: {
-    marginTop: 4,
-    paddingVertical: 8,
+    paddingVertical: 4,
     paddingHorizontal: 20,
     alignItems: "center",
   },
   btnDevText: {
     color: Colors.text.muted,
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: "400",
   },
   adminFooter: {
@@ -431,8 +192,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     gap: 5,
-    paddingVertical: 8,
-    zIndex: 2,
+    paddingVertical: 6,
+    backgroundColor: "rgba(251,246,248,0.92)",
   },
   adminFooterText: {
     fontSize: 11,
