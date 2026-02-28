@@ -122,18 +122,25 @@ const Auth = () => {
 
   // Derive store_mode from source/mode params
   const isFoodSafetySource = signupSource?.includes("food_safety") ?? false;
+  const isMoneyOS = signupSource === "moneyos";
   const derivedStoreMode = isHomeCook
     ? "home_cook"
     : isFoodSafetySource
     ? "food_safety"
     : undefined;
 
+  // Variant-specific branding
+  const brandTitle = isMoneyOS ? "MoneyOS" : isFoodSafetySource ? "EatSafe" : isHomeCook ? "ChefOS Home" : "ChefOS";
+  const brandSubtitle = isMoneyOS ? "Financial Intelligence for Kitchens" : isFoodSafetySource ? "Food Safety Compliance" : isHomeCook ? "Home Kitchen Organiser" : "Kitchen Management System";
+  const brandLogoLink = isMoneyOS ? "/money-landing" : isFoodSafetySource ? "/food-safety-landing" : isHomeCook ? "/home-cook" : "/";
+  const postAuthRedirect = isMoneyOS ? "/money/reactor" : "/dashboard";
+
   // Redirect if already logged in
   useEffect(() => {
     if (user) {
-      navigate("/dashboard", { replace: true });
+      navigate(postAuthRedirect, { replace: true });
     }
-  }, [user, navigate]);
+  }, [user, navigate, postAuthRedirect]);
 
   // Check for referral code in URL
   useEffect(() => {
@@ -162,7 +169,7 @@ const Auth = () => {
     try {
       await signIn(loginEmail, loginPassword);
       haptic("success");
-      navigate("/dashboard");
+      navigate(postAuthRedirect);
     } catch (error: any) {
       haptic("error");
       const msg = error?.message || "Invalid login credentials";
@@ -244,11 +251,11 @@ const Auth = () => {
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <Link to={isHomeCook ? "/home-cook" : "/"} className="flex justify-center mb-4">
-            <img src={chefLogo} alt="ChefOS logo" className="w-16 h-16 rounded-2xl shadow-md hover:shadow-lg transition-shadow" />
+          <Link to={brandLogoLink} className="flex justify-center mb-4">
+            <img src={chefLogo} alt={`${brandTitle} logo`} className="w-16 h-16 rounded-2xl shadow-md hover:shadow-lg transition-shadow" />
           </Link>
-          <CardTitle className="text-2xl font-display">{isHomeCook ? "ChefOS Home" : "ChefOS"}</CardTitle>
-          <CardDescription>{isHomeCook ? "Home Kitchen Organiser" : "Kitchen Management System"}</CardDescription>
+          <CardTitle className="text-2xl font-display">{brandTitle}</CardTitle>
+          <CardDescription>{brandSubtitle}</CardDescription>
           {referralCode && (
             <div className="mt-3">
               <Badge variant="secondary" className="gap-1.5 px-3 py-1">
@@ -312,10 +319,10 @@ const Auth = () => {
                 <SocialLoginButtons />
                 <form onSubmit={handleSignup} className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="signup-org">{isHomeCook ? "Your Kitchen Name" : "Kitchen / Restaurant Name"}</Label>
+                    <Label htmlFor="signup-org">{isHomeCook ? "Your Kitchen Name" : isFoodSafetySource ? "Business Name" : "Kitchen / Restaurant Name"}</Label>
                     <div className="relative">
                       <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                      <Input id="signup-org" type="text" placeholder={isHomeCook ? "Sarah's Kitchen" : "Ramsay's Kitchen"} className="pl-10" value={signupOrgName} onChange={(e) => setSignupOrgName(e.target.value)} required />
+                      <Input id="signup-org" type="text" placeholder={isHomeCook ? "Sarah's Kitchen" : isFoodSafetySource ? "Your Business" : "Ramsay's Kitchen"} className="pl-10" value={signupOrgName} onChange={(e) => setSignupOrgName(e.target.value)} required />
                     </div>
                   </div>
                   <div className="space-y-2">

@@ -18,6 +18,7 @@ export function useFeatureGate() {
   const variant = useMemo<AppVariant>(() => {
     const mode = storeMode || "restaurant";
     if (mode === "home_cook") return "homechef";
+    if (mode === "food_safety") return "eatsafe_au";
     return "chefos";
   }, [storeMode]);
 

@@ -5,7 +5,7 @@ export interface Store {
   settings: StoreSettings;
 }
 
-export type StoreMode = 'restaurant' | 'cafe' | 'bar' | 'hotel' | 'catering' | 'home_cook';
+export type StoreMode = 'restaurant' | 'cafe' | 'bar' | 'hotel' | 'catering' | 'home_cook' | 'food_safety';
 
 export type AppVariant =
   // Australia (originals + state-based)

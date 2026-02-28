@@ -328,7 +328,7 @@ const FoodSafetyLanding = () => {
               <p className="text-blue-100 mb-8">{sectionMap.final_cta?.subtitle}</p>
               <Button
                 size="lg"
-                onClick={() => navigate(obj("final_cta").button_link || "/auth?tab=signup")}
+                onClick={() => navigate(obj("final_cta").button_link || "/auth?tab=signup&source=food_safety")}
                 className="bg-white text-blue-700 hover:bg-blue-50 px-8 py-6 text-lg font-semibold shadow-lg"
               >
                 {obj("final_cta").button_text || "Start Free Trial"} <ArrowRight className="w-5 h-5 ml-2" />

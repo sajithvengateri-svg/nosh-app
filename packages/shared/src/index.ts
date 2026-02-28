@@ -17,6 +17,7 @@ export {
   isFeatureAvailable,
   isVariantFeature,
   isHomeCookMode,
+  isEatSafeMode,
   isGCCVariant,
   isComplianceVariant,
 } from "./lib/modeConfig.ts";
