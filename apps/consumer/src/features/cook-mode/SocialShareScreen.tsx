@@ -65,7 +65,7 @@ export function SocialShareScreen({
     try {
       const { status } = await MediaLibrary.requestPermissionsAsync();
       if (status !== "granted") {
-        Alert.alert("Permission needed", "Allow gallery access to save your NOSH card.");
+        Alert.alert("Permission needed", "Allow gallery access to save your Prep Mi card.");
         setIsSaving(false);
         return;
       }
@@ -73,7 +73,7 @@ export function SocialShareScreen({
       if (uri) {
         await MediaLibrary.saveToLibraryAsync(uri);
         successNotification();
-        Alert.alert("Saved!", "Your NOSH card has been saved to your gallery.");
+        Alert.alert("Saved!", "Your Prep Mi card has been saved to your gallery.");
       }
     } catch (err) {
       console.warn("Save failed:", err);
@@ -144,7 +144,7 @@ export function SocialShareScreen({
       if (uri && (await Sharing.isAvailableAsync())) {
         await Sharing.shareAsync(uri, {
           mimeType: "image/png",
-          dialogTitle: "Share your NOSH card",
+          dialogTitle: "Share your Prep Mi card",
         });
         trackShare("generic", true);
       }
@@ -161,7 +161,7 @@ export function SocialShareScreen({
     >
       <Text style={styles.heading}>Share your cook!</Text>
       <Text style={styles.subheading}>
-        Save or share your NOSH card
+        Save or share your Prep Mi card
       </Text>
 
       {/* Format toggle */}

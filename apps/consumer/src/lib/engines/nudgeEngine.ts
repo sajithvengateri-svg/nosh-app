@@ -345,7 +345,7 @@ export function evaluateNudge(
       shouldNudge: true,
       payload: {
         type: "dna_reveal",
-        message: "Your Nosh DNA is ready! I've been watching how you cook — want to see what I found?",
+        message: "Your Prep DNA is ready! I've been watching how you cook — want to see what I found?",
         openOverlay: "nosh_dna",
         achievementKey: "identity_found",
         smartBubbles: [
@@ -419,7 +419,7 @@ export function evaluateNudge(
       ocd_planner: "ruler",
     };
     const LABEL: Record<PersonalityType, string> = {
-      humpday_nosher: "Humpday Nosher",
+      humpday_nosher: "Humpday Preper",
       weekend_warrior: "Weekend Warrior",
       thrill_seeker: "Thrill Seeker",
       ocd_planner: "OCD Planner",
@@ -440,7 +440,7 @@ export function evaluateNudge(
   // Priority 5: Hybrid mode detected
   if (hybridMode) {
     const LABEL: Record<PersonalityType, string> = {
-      humpday_nosher: "Humpday Nosher",
+      humpday_nosher: "Humpday Preper",
       weekend_warrior: "Weekend Warrior",
       thrill_seeker: "Thrill Seeker",
       ocd_planner: "OCD Planner",
@@ -482,7 +482,7 @@ export function evaluateNudge(
       shouldNudge: true,
       payload: {
         type: "social_prompt",
-        message: "You've cooked 10+ recipes — ever thought about hosting a Nosh night with friends?",
+        message: "You've cooked 10+ recipes — ever thought about hosting a Prep night with friends?",
         smartBubbles: [
           { id: "social_go", label: "Tell me more", action: "open_social_cooking", iconName: "users" },
           { id: "social_skip", label: "Not now", action: "dismiss_nudge" },

@@ -89,7 +89,7 @@ const SOCIAL_NUDGES = [
   "Host a dinner this weekend?",
   "Share your recipe with friends",
   "Cook together with someone tonight",
-  "Invite a friend to try NOSH",
+  "Invite a friend to try Prep Mi",
   "Start a dinner club",
   "Challenge a mate to a cook-off",
   "Plan a Sunday roast for the group",

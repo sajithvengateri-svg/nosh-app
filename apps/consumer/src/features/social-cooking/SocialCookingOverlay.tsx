@@ -35,7 +35,7 @@ const EVENT_TYPE_OPTIONS: {
   {
     type: "dutch_nosh",
     icon: CookingPot,
-    label: "Dutch Nosh",
+    label: "Dutch Prep",
     description: "Potluck -- everyone brings a dish",
   },
 ];

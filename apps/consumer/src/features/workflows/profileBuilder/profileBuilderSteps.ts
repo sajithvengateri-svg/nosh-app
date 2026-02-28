@@ -6,14 +6,14 @@ export const PROFILE_BUILDER_STEPS: WorkflowStep[] = [
     type: "info_card",
     question: "Let's build your profile",
     subtitle:
-      "We'll ask you a few questions to personalise your NOSH experience. Takes about 2 minutes.",
+      "We'll ask you a few questions to personalise your Prep Mi experience. Takes about 2 minutes.",
     required: false,
   },
   {
     id: "name",
     type: "text_input",
     question: "What should we call you?",
-    subtitle: "Your display name in NOSH",
+    subtitle: "Your display name in Prep Mi",
     required: true,
     validate: (v) => (!v?.trim() ? "Please enter your name" : null),
   },
@@ -220,7 +220,7 @@ export const PROFILE_BUILDER_STEPS: WorkflowStep[] = [
     subtitle: "Your cooking personality",
     options: [
       {
-        label: "Humpday Nosher",
+        label: "Humpday Preper",
         value: "humpday_nosher",
         description: "Plans midweek, shops weekend, cooks with confidence",
       },
@@ -249,7 +249,7 @@ export const PROFILE_BUILDER_STEPS: WorkflowStep[] = [
     type: "info_card",
     question: "You're all set!",
     subtitle:
-      "Your NOSH experience is now personalised. You can always update your profile from Settings.",
+      "Your Prep Mi experience is now personalised. You can always update your profile from Settings.",
     required: false,
   },
 ];

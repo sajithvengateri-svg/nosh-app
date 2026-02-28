@@ -155,7 +155,7 @@ export function ShopTab({ onStartRun }: ShopTabProps) {
         }}
         style={styles.startRunButton}
       >
-        <Text style={styles.startRunText}>Start Nosh Run</Text>
+        <Text style={styles.startRunText}>Start Prep Run</Text>
       </Pressable>
     </ScrollView>
   );

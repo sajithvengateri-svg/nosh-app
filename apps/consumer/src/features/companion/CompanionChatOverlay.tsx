@@ -87,7 +87,7 @@ export function CompanionChatOverlay() {
             <View style={{ marginBottom: 8 }}>
               <MessageCircle size={32} color={Colors.text.muted} strokeWidth={1.5} />
             </View>
-            <Text style={styles.emptyTitle}>Hey! I'm your NOSH companion</Text>
+            <Text style={styles.emptyTitle}>Hey! I'm your Prep Mi companion</Text>
             <Text style={styles.emptyText}>
               Ask me what to cook tonight, help with substitutions, or tell me
               what's in your fridge.

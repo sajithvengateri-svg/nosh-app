@@ -22,7 +22,7 @@ export function NoshPlusCard({ data }: { data: NoshPlusCardData }) {
         <Zap size={22} color={Colors.primary} strokeWidth={2} fill={Colors.primary} />
       </View>
       <View style={{ flex: 1 }}>
-        <Text style={styles.title}>{data.headline ?? "Upgrade to NOSH+"}</Text>
+        <Text style={styles.title}>{data.headline ?? "Upgrade to Prep Mi+"}</Text>
         <Text style={styles.subtitle}>
           {data.subtext ?? "Autopilot planning, savings tracking, leftover intelligence"}
         </Text>

@@ -45,7 +45,7 @@ const NUDGE_POOL: NudgeItem[] = [
   { label: "Find deals?", icon: Tag, key: "vendors", variant: "bubble", voicePrompt: "say: show vendors", pastel: "#EFEBE9" },
   { label: "Your DNA?", icon: Dna, key: "nosh_dna", variant: "bubble", voicePrompt: "say: my DNA", pastel: "#E0F2F1" },
   { label: "Cook something?", icon: ChefHat, key: "nosh_run", variant: "bubble", voicePrompt: "say: start run", pastel: "#FFF8E1" },
-  { label: "Social nosh?", icon: Users, key: "social_cooking", variant: "bubble", voicePrompt: "say: social", pastel: "#FCE4EC" },
+  { label: "Social prep?", icon: Users, key: "social_cooking", variant: "bubble", voicePrompt: "say: social", pastel: "#FCE4EC" },
 ];
 
 const VISIBLE_COUNT = 4;

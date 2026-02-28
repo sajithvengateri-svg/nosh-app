@@ -439,7 +439,7 @@ export default function NoshConsumerLanding() {
             <ShoppingMockup items={SHOPPING.items} total={SHOPPING.total} />
           </FloatingBubble>
           <div className="flex flex-wrap justify-center md:flex-col gap-3">
-            <GlassPill delay={0.4} accent={PASTEL.coral}>Prep Mi Run</GlassPill>
+            <GlassPill delay={0.4} accent={PASTEL.coral}>Prep Run</GlassPill>
             <GlassPill delay={0.5} accent={PASTEL.coral}>3 stores nearby</GlassPill>
             <GlassPill delay={0.6} accent={PASTEL.coral}>Auto-sorted</GlassPill>
           </div>

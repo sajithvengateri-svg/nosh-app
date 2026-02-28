@@ -22,7 +22,7 @@ export default function NoshDnaCard({
 
   return (
     <View style={styles.card}>
-      <Text style={styles.header}>Your Nosh DNA Updated!</Text>
+      <Text style={styles.header}>Your Prep DNA Updated!</Text>
 
       <Text style={styles.confidence}>
         Confidence: {oldPct}% → {newPct}%

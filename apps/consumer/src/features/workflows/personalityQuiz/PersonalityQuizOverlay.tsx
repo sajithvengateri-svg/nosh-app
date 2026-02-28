@@ -13,7 +13,7 @@ import type { WorkflowConfig } from "../types";
 
 const QUIZ_CONFIG: WorkflowConfig = {
   id: "personality_quiz",
-  title: "Build Your Nosh",
+  title: "Build Your Prep",
   steps: PERSONALITY_QUIZ_STEPS,
   showProgress: true,
   allowBack: true,

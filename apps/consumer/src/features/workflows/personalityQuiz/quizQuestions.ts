@@ -4,7 +4,7 @@ export const PERSONALITY_QUIZ_STEPS: WorkflowStep[] = [
   {
     id: "quiz_intro",
     type: "info_card",
-    question: "Build Your Nosh",
+    question: "Build Your Prep",
     subtitle:
       "Answer 10 quick scenarios and we'll figure out your cooking personality. There are no wrong answers!",
     required: false,

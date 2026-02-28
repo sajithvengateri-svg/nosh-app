@@ -188,7 +188,7 @@ export function EventDashboard() {
         </View>
       )}
 
-      {/* Dutch Nosh: Dish Board Summary */}
+      {/* Dutch Prep: Dish Board Summary */}
       {activeEvent.event_type === "dutch_nosh" && dishes.length > 0 && (
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>

@@ -41,11 +41,11 @@ const NAV_ITEMS: NavItem[] = [
   { label: "Bar", icon: Martini, key: "bar" },
   { label: "Recipes", icon: BookOpen, key: "my_recipes" },
   { label: "Plan", icon: CalendarDays, key: "meal_plan" },
-  { label: "Nosh Run", icon: Zap, key: "nosh_run" },
+  { label: "Prep Run", icon: Zap, key: "nosh_run" },
   { label: "Social", icon: Users, key: "social_cooking" },
   { label: "Vendors", icon: Store, key: "vendors" },
   { label: "My Deals", icon: Tag, key: "my_deals" },
-  { label: "Nosh DNA", icon: Dna, key: "nosh_dna" },
+  { label: "Prep DNA", icon: Dna, key: "nosh_dna" },
   { label: "Settings", icon: Settings, key: "settings" },
 ];
 

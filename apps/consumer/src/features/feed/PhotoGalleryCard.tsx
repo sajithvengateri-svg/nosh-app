@@ -81,7 +81,7 @@ export function PhotoGalleryCard() {
       <View style={styles.header}>
         <View style={styles.headerLeft}>
           <Camera size={18} color={Colors.text.primary} strokeWidth={1.75} />
-          <Text style={styles.headerTitle}>Your Nosh Gallery</Text>
+          <Text style={styles.headerTitle}>Your Prep Mi Gallery</Text>
         </View>
         {photos.length > 0 && (
           <View style={styles.countBadge}>

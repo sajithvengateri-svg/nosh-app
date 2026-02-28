@@ -42,7 +42,7 @@ function getSmartSuggestion(): NoshResponse {
     return {
       id,
       type: "action",
-      content: "Start a Nosh Run",
+      content: "Start a Prep Run",
       icon: "shopping_cart",
       action: "open_nosh_run",
       timestamp,
@@ -218,7 +218,7 @@ export function CanvasScreen({ onAction, onSuggestionTap }: CanvasScreenProps) {
                 <TextInput
                   value={inputText}
                   onChangeText={setInputText}
-                  placeholder="Ask NOSH anything..."
+                  placeholder="Ask Prep Mi anything..."
                   placeholderTextColor={Colors.text.muted}
                   style={styles.textInput}
                   onSubmitEditing={handleSend}

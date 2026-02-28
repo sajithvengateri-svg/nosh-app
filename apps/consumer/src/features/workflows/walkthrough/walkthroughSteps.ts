@@ -4,7 +4,7 @@ export const WALKTHROUGH_STEPS: WorkflowStep[] = [
   {
     id: "welcome",
     type: "info_card",
-    question: "Welcome to NOSH",
+    question: "Welcome to Prep Mi",
     subtitle: "Your AI cooking companion that learns how you cook. Let us show you around — it'll take 30 seconds.",
     required: false,
   },
@@ -32,15 +32,15 @@ export const WALKTHROUGH_STEPS: WorkflowStep[] = [
   {
     id: "nosh_dna",
     type: "info_card",
-    question: "Your Nosh DNA",
-    subtitle: "NOSH learns your cooking personality over time. The more you cook, the smarter your feed gets.\n\nTake the personality quiz to kickstart your DNA profile.",
+    question: "Your Prep DNA",
+    subtitle: "Prep Mi learns your cooking personality over time. The more you cook, the smarter your feed gets.\n\nTake the personality quiz to kickstart your DNA profile.",
     required: false,
   },
   {
     id: "meal_plan",
     type: "info_card",
     question: "Plan Your Week",
-    subtitle: "Drag recipes into your weekly meal plan. NOSH auto-generates a shopping list based on what's already in your kitchen.",
+    subtitle: "Drag recipes into your weekly meal plan. Prep Mi auto-generates a shopping list based on what's already in your kitchen.",
     required: false,
   },
   {

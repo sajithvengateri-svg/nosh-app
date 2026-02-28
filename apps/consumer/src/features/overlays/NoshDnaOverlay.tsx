@@ -76,7 +76,7 @@ export default function NoshDnaOverlay() {
     return (
       <View style={styles.empty}>
         <Text style={styles.emptyText}>
-          Complete onboarding to unlock your Nosh DNA
+          Complete onboarding to unlock your Prep DNA
         </Text>
       </View>
     );
@@ -104,7 +104,7 @@ export default function NoshDnaOverlay() {
         ? earned.map((a) => a.label).join(" · ")
         : "",
       "",
-      "Try NOSH -- nosh.app",
+      "Try Prep Mi -- nosh.app",
     ].filter(Boolean);
     await Share.share({ message: lines.join("\n") });
   }, [label, confidencePct, totalCooks, cuisines.size, earned]);
@@ -226,8 +226,8 @@ export default function NoshDnaOverlay() {
         </>
       )}
 
-      {/* Nosh Run History */}
-      <Text style={styles.sectionTitle}>Nosh Run History</Text>
+      {/* Prep Run History */}
+      <Text style={styles.sectionTitle}>Prep Run History</Text>
       {runHistory.length > 0 ? (
         <View style={styles.historyList}>
           {runHistory.map((run, i) => (
@@ -247,7 +247,7 @@ export default function NoshDnaOverlay() {
       ) : (
         <View style={styles.historyEmpty}>
           <Text style={styles.historyEmptyText}>
-            No runs yet! Complete a Nosh Run to see your history.
+            No runs yet! Complete a Prep Run to see your history.
           </Text>
         </View>
       )}

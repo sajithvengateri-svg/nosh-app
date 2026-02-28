@@ -144,7 +144,7 @@ export function SettingsOverlay({ onOpenOverlay, onClose }: { onOpenOverlay?: (k
             mediumTap();
             Alert.alert(
               "Reset Preferences",
-              "This will clear all learned shopping preferences. NOSH will start learning again from scratch.",
+              "This will clear all learned shopping preferences. Prep Mi will start learning again from scratch.",
               [
                 { text: "Cancel", style: "cancel" },
                 {

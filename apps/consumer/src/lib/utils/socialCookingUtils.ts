@@ -135,7 +135,7 @@ const TYPE_ICON: Record<SocialEventType, React.ComponentType<any>> = {
 const TYPE_LABELS: Record<SocialEventType, string> = {
   sunday_roast: "Sunday Roast",
   party: "Party Mode",
-  dutch_nosh: "Dutch Nosh",
+  dutch_nosh: "Dutch Prep",
 };
 
 export function getEventTypeIcon(type: SocialEventType): React.ComponentType<any> {

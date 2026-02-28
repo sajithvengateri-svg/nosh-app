@@ -62,7 +62,7 @@ const MORE_ITEMS: QuickMenuAction[] = [
   { icon: Martini, label: "Bar", key: "bar" },
   { icon: BookOpen, label: "Recipes", key: "my_recipes" },
   { icon: CalendarDays, label: "Plan", key: "meal_plan" },
-  { icon: Zap, label: "Nosh Run", key: "nosh_run" },
+  { icon: Zap, label: "Prep Run", key: "nosh_run" },
   { icon: Users, label: "Social", key: "social_cooking" },
   { icon: Store, label: "Vendors", key: "vendors" },
   { icon: Tag, label: "Deals", key: "my_deals" },

@@ -44,7 +44,7 @@ export function buildMapsDeepLink(storeName: string): string {
  */
 export function buildClipboardList(basket: NoshBasket): string {
   const lines: string[] = [];
-  lines.push(`NOSH RUN -- ${basket.recipeTitle}`);
+  lines.push(`PREP RUN -- ${basket.recipeTitle}`);
   lines.push("");
 
   const grouped = groupByAisle(basket.items);
@@ -67,7 +67,7 @@ export function buildClipboardList(basket: NoshBasket): string {
 
   lines.push(`Total: $${basket.totals.current.toFixed(2)}`);
   lines.push("");
-  lines.push("Made with NOSH");
+  lines.push("Made with Prep Mi");
 
   return lines.join("\n");
 }

@@ -115,7 +115,7 @@ const ICON_MAP: Record<PersonalityType, React.ComponentType<any>> = {
 };
 
 const LABEL_MAP: Record<PersonalityType, string> = {
-  humpday_nosher: "Humpday Nosher",
+  humpday_nosher: "Humpday Preper",
   weekend_warrior: "Weekend Warrior",
   thrill_seeker: "Thrill Seeker",
   ocd_planner: "OCD Planner",

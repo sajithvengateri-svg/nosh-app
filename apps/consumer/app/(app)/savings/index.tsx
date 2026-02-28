@@ -150,7 +150,7 @@ export default function SavingsPage() {
           <View style={styles.empty}>
             <Text style={styles.emptyTitle}>Start saving</Text>
             <Text style={styles.emptyDesc}>
-              Complete a Nosh Run to start tracking your savings. The more you cook at home, the more you save.
+              Complete a Prep Run to start tracking your savings. The more you cook at home, the more you save.
             </Text>
           </View>
         )}

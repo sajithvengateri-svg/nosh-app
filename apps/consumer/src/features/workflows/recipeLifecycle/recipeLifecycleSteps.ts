@@ -6,7 +6,7 @@ export const RECIPE_LIFECYCLE_STEPS: WorkflowStep[] = [
     type: "info_card",
     question: "Your Recipe Journey",
     subtitle:
-      "Every recipe in NOSH follows a simple flow: discover, explore, shop, cook, share, and reflect. Let us walk you through it.",
+      "Every recipe in Prep Mi follows a simple flow: discover, explore, shop, cook, share, and reflect. Let us walk you through it.",
     required: false,
   },
   {
@@ -38,7 +38,7 @@ export const RECIPE_LIFECYCLE_STEPS: WorkflowStep[] = [
     type: "info_card",
     question: "Smart Shopping",
     subtitle:
-      "NOSH groups your shopping list by vendor and finds the best deals.\n\n-> Shop tab shows vendor prices\n-> Run tab gives you a checklist\n-> Tap 'Start Cooking' when you're stocked up",
+      "Prep Mi groups your shopping list by vendor and finds the best deals.\n\n-> Shop tab shows vendor prices\n-> Run tab gives you a checklist\n-> Tap 'Start Cooking' when you're stocked up",
     required: false,
   },
   {
@@ -54,7 +54,7 @@ export const RECIPE_LIFECYCLE_STEPS: WorkflowStep[] = [
     type: "info_card",
     question: "Share Your Creation",
     subtitle:
-      "After cooking, capture a photo and share a NOSH card.\n\n-> Choose square or story format\n-> Share to Instagram, WhatsApp, or save\n-> Copy the auto-generated caption",
+      "After cooking, capture a photo and share a Prep Mi card.\n\n-> Choose square or story format\n-> Share to Instagram, WhatsApp, or save\n-> Copy the auto-generated caption",
     required: false,
   },
   {

@@ -36,7 +36,7 @@ const ACHIEVEMENTS: AchievementDef[] = [
   {
     key: "first_cook",
     iconName: "utensils_crossed",
-    label: "First Nosh",
+    label: "First Prep",
     description: "Cooked your first recipe",
     check: (s) => s.totalCooks >= 1,
   },
@@ -146,7 +146,7 @@ const ACHIEVEMENTS: AchievementDef[] = [
     key: "smart_shopper",
     iconName: "shopping_cart",
     label: "Smart Shopper",
-    description: "Completed 5 Nosh Runs",
+    description: "Completed 5 Prep Runs",
     check: (s) => s.noshRunsCompleted >= 5,
   },
   {

@@ -271,7 +271,7 @@ export default function RecipeDetailScreen() {
           {recipe.source_type && (recipe.source_type === "nosh_nonna" || recipe.source_type === "nosh_pro") && (
             <View style={styles.sourceBadge}>
               <Text style={styles.sourceBadgeText}>
-                {recipe.source_type === "nosh_nonna" ? "Nosh Nonna" : "Nosh Pro"}
+                {recipe.source_type === "nosh_nonna" ? "Prep Mi Nonna" : "Prep Mi Pro"}
               </Text>
             </View>
           )}
