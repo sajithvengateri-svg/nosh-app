@@ -7,7 +7,8 @@ import { FeedCard } from "./FeedCard";
 import type { FeedCardItem } from "./FeedCard";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
-const SWIPE_THRESHOLD = 100;
+const SWIPE_THRESHOLD = 100; // min px to trigger swipe
+const MIN_VELOCITY_DX = 40; // min px dragged before velocity counts
 const ROTATION_FACTOR = 15;
 
 interface SwipeableFeedCardProps {
@@ -28,6 +29,7 @@ export function SwipeableFeedCard({
   const pan = useRef(new Animated.ValueXY()).current;
   const passedThreshold = useRef(false);
   const didSwipe = useRef(false);
+  const swiping = useRef(false); // lock to prevent double-fire
 
   const rotation = pan.x.interpolate({
     inputRange: [-SCREEN_WIDTH, 0, SCREEN_WIDTH],
@@ -48,7 +50,11 @@ export function SwipeableFeedCard({
     PanResponder.create({
       onMoveShouldSetPanResponder: (_, g) =>
         Math.abs(g.dx) > 10 && Math.abs(g.dx) > Math.abs(g.dy),
+      onPanResponderGrant: () => {
+        didSwipe.current = false;
+      },
       onPanResponderMove: (_, g) => {
+        if (swiping.current) return; // already animating out
         didSwipe.current = true;
         pan.setValue({ x: g.dx, y: 0 });
 
@@ -61,29 +67,46 @@ export function SwipeableFeedCard({
         }
       },
       onPanResponderRelease: (_, g) => {
+        if (swiping.current) return;
         passedThreshold.current = false;
 
-        if (g.dx > SWIPE_THRESHOLD || g.vx > 0.5) {
+        const absDx = Math.abs(g.dx);
+        const isRightSwipe =
+          g.dx > SWIPE_THRESHOLD || (g.vx > 0.5 && absDx > MIN_VELOCITY_DX && g.dx > 0);
+        const isLeftSwipe =
+          g.dx < -SWIPE_THRESHOLD || (g.vx < -0.5 && absDx > MIN_VELOCITY_DX && g.dx < 0);
+
+        if (isRightSwipe) {
+          swiping.current = true;
           successNotification();
           Animated.timing(pan, {
             toValue: { x: SCREEN_WIDTH + 100, y: 0 },
             duration: 250,
             useNativeDriver: true,
-          }).start(() => onSwipeRight(item));
-        } else if (g.dx < -SWIPE_THRESHOLD || g.vx < -0.5) {
+          }).start(() => {
+            onSwipeRight(item);
+          });
+        } else if (isLeftSwipe) {
+          swiping.current = true;
           lightTap();
           Animated.timing(pan, {
             toValue: { x: -SCREEN_WIDTH - 100, y: 0 },
             duration: 250,
             useNativeDriver: true,
-          }).start(() => onSwipeLeft(item));
+          }).start(() => {
+            onSwipeLeft(item);
+          });
         } else {
+          // Snap back
+          didSwipe.current = absDx > 5; // only count as swipe if moved meaningfully
           Animated.spring(pan, {
             toValue: { x: 0, y: 0 },
             speed: 20,
             bounciness: 8,
             useNativeDriver: true,
-          }).start();
+          }).start(() => {
+            didSwipe.current = false;
+          });
         }
       },
     }),
@@ -118,7 +141,7 @@ export function SwipeableFeedCard({
       {/* Actual card */}
       <Pressable
         onPress={() => {
-          if (!didSwipe.current && onCardTap) {
+          if (!didSwipe.current && !swiping.current && onCardTap) {
             lightTap();
             onCardTap(item);
           }

@@ -9,6 +9,7 @@ import {
   Linking,
   Pressable,
   Keyboard,
+  Alert,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { router } from "expo-router";
@@ -297,7 +298,19 @@ export default function FeedScreen() {
           onOpenOverlay={openPage}
           onCardTap={(item) => {
             if (item.type === "recipe" && item.data?.id) {
-              router.push(`/(app)/recipe/${item.data.id}`);
+              const recipeId = item.data.id;
+              const title = item.data.title ?? "This recipe";
+              Alert.alert(title, "What would you like to do?", [
+                {
+                  text: "Cook Now",
+                  onPress: () => router.push(`/(app)/cook-mode/${recipeId}`),
+                },
+                {
+                  text: "View Recipe",
+                  onPress: () => router.push(`/(app)/recipe/${recipeId}`),
+                },
+                { text: "Cancel", style: "cancel" },
+              ]);
             } else {
               setDetailItem(item);
             }
