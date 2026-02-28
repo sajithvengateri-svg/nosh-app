@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Queitos Dev Hub</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0C1222; color: #E2E8F0; min-height: 100vh; padding: 24px 16px; }
+  h1 { font-size: 28px; font-weight: 800; text-align: center; margin-bottom: 6px; }
+  .subtitle { text-align: center; color: #64748B; font-size: 13px; margin-bottom: 32px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 16px; max-width: 1400px; margin: 0 auto; }
+  .section { background: #1E293B; border-radius: 16px; padding: 20px; border: 1px solid #334155; }
+  .section-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid #334155; }
+  .section-header h2 { font-size: 15px; font-weight: 700; }
+  .badge { font-size: 9px; font-weight: 700; padding: 2px 7px; border-radius: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .badge-au { background: #3B82F620; color: #60A5FA; }
+  .badge-in { background: #F9731620; color: #FB923C; }
+  .badge-uae { background: #EAB30820; color: #FACC15; }
+  .badge-uk { background: #EC489920; color: #F472B6; }
+  .badge-sg { background: #EF444420; color: #F87171; }
+  .badge-us { background: #8B5CF620; color: #A78BFA; }
+  .badge-standalone { background: #10B98120; color: #34D399; }
+  .badge-consumer { background: #D9487820; color: #FB7185; }
+
+  .app-row { padding: 10px 0; border-bottom: 1px solid #334155; }
+  .app-row:last-child { border-bottom: none; }
+  .app-top { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .app-name { font-size: 14px; font-weight: 700; }
+  .app-links-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .link-group { display: flex; flex-direction: column; gap: 3px; }
+  .link-label { font-size: 9px; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 0.5px; }
+  .link-row { display: flex; gap: 4px; flex-wrap: wrap; }
+
+  .link { display: inline-flex; align-items: center; gap: 3px; font-size: 10px; font-weight: 600; padding: 4px 8px; border-radius: 6px; text-decoration: none; transition: all 0.15s; cursor: pointer; white-space: nowrap; }
+  .link-landing { background: #F59E0B18; color: #FBBF24; border: 1px solid #F59E0B25; }
+  .link-landing:hover { background: #F59E0B30; }
+  .link-app { background: #6366F118; color: #818CF8; border: 1px solid #6366F125; }
+  .link-app:hover { background: #6366F130; }
+  .link-mobile { background: #10B98118; color: #34D399; border: 1px solid #10B98125; }
+  .link-mobile:hover { background: #10B98130; }
+  .link-live { background: #EC489918; color: #F472B6; border: 1px solid #EC489925; }
+  .link-live:hover { background: #EC489930; }
+  .link-city { background: #F59E0B10; color: #D97706; border: 1px solid #F59E0B15; font-size: 9px; padding: 3px 6px; }
+  .link-city:hover { background: #F59E0B25; }
+
+  .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .stream-chefos { background: #6366F1; }
+  .stream-homechef { background: #EC4899; }
+  .stream-eatsafe { background: #F59E0B; }
+  .stream-vendor { background: #8B5CF6; }
+  .stream-moneyos { background: #10B981; }
+  .stream-consumer { background: #D94878; }
+
+  .commands { background: #0F172A; border-radius: 12px; padding: 16px; margin-top: 24px; max-width: 1400px; margin-left: auto; margin-right: auto; border: 1px solid #334155; }
+  .commands h3 { font-size: 13px; font-weight: 700; margin-bottom: 10px; color: #94A3B8; }
+  .cmd { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 11px; color: #34D399; padding: 3px 0; }
+  .cmd span { color: #64748B; }
+
+  .legend { display: flex; gap: 14px; justify-content: center; margin-bottom: 20px; flex-wrap: wrap; }
+  .legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: #94A3B8; }
+  footer { text-align: center; margin-top: 32px; font-size: 11px; color: #475569; }
+
+  #toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: #10B981; color: #fff; padding: 10px 20px; border-radius: 10px; font-size: 12px; font-weight: 600; display: none; z-index: 100; box-shadow: 0 4px 12px #10B98140; }
+
+  .cities-row { display: flex; gap: 4px; flex-wrap: wrap; padding: 6px 0 2px 16px; }
+</style>
+</head>
+<body>
+
+<h1>Queitos Dev Hub</h1>
+<p class="subtitle">All apps &middot; All variants &middot; One monorepo &middot; Landing + Web App + Mobile</p>
+
+<div class="legend">
+  <div class="legend-item"><div class="dot stream-chefos"></div> ChefOS</div>
+  <div class="legend-item"><div class="dot stream-homechef"></div> HomeChef</div>
+  <div class="legend-item"><div class="dot stream-eatsafe"></div> EatSafe</div>
+  <div class="legend-item"><div class="dot stream-vendor"></div> VendorOS</div>
+  <div class="legend-item"><div class="dot stream-moneyos"></div> MoneyOS</div>
+  <div class="legend-item"><div class="dot stream-consumer"></div> Nosh / Prep Mi</div>
+  <div class="legend-item" style="margin-left:8px; padding-left:8px; border-left:1px solid #334155;">
+    <span class="link link-landing" style="cursor:default; padding:2px 6px;">Landing</span>
+    <span class="link link-app" style="cursor:default; padding:2px 6px;">Web App</span>
+    <span class="link link-mobile" style="cursor:default; padding:2px 6px;">Mobile</span>
+  </div>
+</div>
+
+<div class="grid">
+
+  <!-- AUSTRALIA -->
+  <div class="section">
+    <div class="section-header">
+      <h2>Australia</h2>
+      <span class="badge badge-au">AU</span>
+    </div>
+
+    <div class="app-row">
+      <div class="app-top"><div class="dot stream-chefos"></div><div class="app-name">ChefOS</div></div>
+      <div class="app-links-grid">
+        <div class="link-group">
+          <div class="link-label">Landing</div>
+          <div class="link-row">
+            <a class="link link-landing" href="https://chefos.ai" target="_blank">chefos.ai</a>
+          </div>
+        </div>
+        <div class="link-group">
+          <div class="link-label">Web App</div>
+          <div class="link-row">
+            <a class="link link-app" href="https://chefos.ai/dashboard" target="_blank">Live</a>
+            <a class="link link-app" href="#" onclick="startWeb('chefos')">Dev</a>
+          </div>
+        </div>
+        <div class="link-group">
+          <div class="link-label">Mobile</div>
+          <div class="link-row">
+            <a class="link link-mobile" href="#" onclick="copyCmd('chefos')">Expo</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="app-row">
+      <div class="app-top"><div class="dot stream-homechef"></div><div class="app-name">HomeChef</div></div>
+      <div class="app-links-grid">
+        <div class="link-group">
+          <div class="link-label">Landing</div>
+          <div class="link-row">
+            <a class="link link-landing" href="https://homechef.chefos.ai" target="_blank">homechef.*</a>
+          </div>
+        </div>
+        <div class="link-group">
+          <div class="link-label">Web App</div>
+          <div class="link-row">
+            <a class="link link-app" href="https://homechef.chefos.ai/dashboard" target="_blank">Live</a>
+            <a class="link link-app" href="#" onclick="startWeb('homechef')">Dev</a>
+          </div>
+        </div>
+        <div class="link-group">
+          <div class="link-label">Mobile</div>
+          <div class="link-row">
+            <a class="link link-mobile" href="#" onclick="copyCmd('home')">Expo</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="app-row">
+      <div class="app-top"><div class="dot stream-eatsafe"></div><div class="app-name">EatSafe Brisbane</div></div>
+      <div class="app-links-grid">
+        <div class="link-group">
+          <div class="link-label">Landing</div>
+          <div class="link-row">
+            <a class="link link-landing" href="https://brisbane.chefos.ai" target="_blank">brisbane.*</a>
+          </div>
+        </div>
+        <div class="link-group">
+          <div class="link-label">Web App</div>
+          <div class="link-row">
+            <a class="link link-app" href="https://brisbane.chefos.ai/dashboard" target="_blank">Live</a>
+            <a class="link link-app" href="#" onclick="startWeb('eatsafe_brisbane')">Dev</a>
+          </div>
+        </div>
+        <div class="link-group">
+          <div class="link-label">Mobile</div>
+          <div class="link-row">
+            <a class="link link-mobile" href="#" onclick="copyCmd('brisbane')">Expo</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="cities-row">
+      <a class="link link-city" href="https://sydney.chefos.ai" target="_blank">Sydney</a>
+      <a class="link link-city" href="https://melbourne.chefos.ai" target="_blank">Melbourne</a>
+      <a class="link link-city" href="https://perth.chefos.ai" target="_blank">Perth</a>
+      <a class="link link-city" href="https://adelaide.chefos.ai" target="_blank">Adelaide</a>
+      <a class="link link-city" href="https://hobart.chefos.ai" target="_blank">Hobart</a>
+      <a class="link link-city" href="https://canberra.chefos.ai" target="_blank">Canberra</a>
+      <a class="link link-city" href="https://darwin.chefos.ai" target="_blank">Darwin</a>
+    </div>
+  </div>
+
+  <!-- INDIA -->
+  <div class="section">
+    <div class="section-header">
+      <h2>India</h2>
+      <span class="badge badge-in">IN</span>
+    </div>
+
+    <div class="app-row">
+      <div class="app-top"><div class="dot stream-chefos"></div><div class="app-name">ChefOS India</div></div>
+      <div class="app-links-grid">
+        <div class="link-group"><div class="link-label">Landing</div><div class="link-row"><a class="link link-landing" href="https://chefos-in.chefos.ai" target="_blank">chefos-in.*</a></div></div>
+        <div class="link-group"><div class="link-label">Web App</div><div class="link-row"><a class="link link-app" href="https://chefos-in.chefos.ai/dashboard" target="_blank">Live</a><a class="link link-app" href="#" onclick="startWeb('chefos_in')">Dev</a></div></div>
+        <div class="link-group"><div class="link-label">Mobile</div><div class="link-row"><a class="link link-mobile" href="#" onclick="copyCmd('chefos-in')">Expo</a></div></div>
+      </div>
+    </div>
+
+    <div class="app-row">
+      <div class="app-top"><div class="dot stream-homechef"></div><div class="app-name">HomeChef India</div></div>
+      <div class="app-links-grid">
+        <div class="link-group"><div class="link-label">Landing</div><div class="link-row"><a class="link link-landing" href="https://homechef-in.chefos.ai" target="_blank">homechef-in.*</a></div></div>
+        <div class="link-group"><div class="link-label">Web App</div><div class="link-row"><a class="link link-app" href="https://homechef-in.chefos.ai/dashboard" target="_blank">Live</a><a class="link link-app" href="#" onclick="startWeb('homechef_in')">Dev</a></div></div>
+        <div class="link-group"><div class="link-label">Mobile</div><div class="link-row"><a class="link link-mobile" href="#" onclick="copyCmd('home-in')">Expo</a></div></div>
+      </div>
+    </div>
+
+    <div class="app-row">
+      <div class="app-top"><div class="dot stream-eatsafe"></div><div class="app-name">EatSafe India (FSSAI)</div></div>
+      <div class="app-links-grid">
+        <div class="link-group"><div class="link-label">Landing</div><div class="link-row"><a class="link link-landing" href="https://india.chefos.ai" target="_blank">india.*</a></div></div>
+        <div class="link-group"><div class="link-label">Web App</div><div class="link-row"><a class="link link-app" href="https://india.chefos.ai/dashboard" target="_blank">Live</a><a class="link link-app" href="#" onclick="startWeb('india_fssai')">Dev</a></div></div>
+        <div class="link-group"><div class="link-label">Mobile</div><div class="link-row"><a class="link link-mobile" href="#" onclick="copyCmd('india')">Expo</a></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- UAE -->
+  <div class="section">
+    <div class="section-header">
+      <h2>UAE / GCC</h2>
+      <span class="badge badge-uae">UAE</span>
+    </div>
+
+    <div class="app-row">
+      <div class="app-top"><div class="dot stream-chefos"></div><div class="app-name">ChefOS UAE</div></div>
+      <div class="app-links-grid">
+        <div class="link-group"><div class="link-label">Landing</div><div class="link-row"><a class="link link-landing" href="https://chefos-uae.chefos.ai" target="_blank">chefos-uae.*</a></div></div>
+        <div class="link-group"><div class="link-label">Web App</div><div class="link-row"><a class="link link-app" href="https://chefos-uae.chefos.ai/dashboard" target="_blank">Live</a><a class="link link-app" href="#" onclick="startWeb('chefos_uae')">Dev</a></div></div>
+        <div class="link-group"><div class="link-label">Mobile</div><div class="link-row"><a class="link link-mobile" href="#" onclick="copyCmd('chefos-uae')">Expo</a></div></div>
+      </div>
+    </div>
+
+    <div class="app-row">
+      <div class="app-top"><div class="dot stream-homechef"></div><div class="app-name">HomeChef UAE</div></div>
+      <div class="app-links-grid">
+        <div class="link-group"><div class="link-label">Landing</div><div class="link-row"><a class="link link-landing" href="https://homechef-uae.chefos.ai" target="_blank">homechef-uae.*</a></div></div>
+        <div class="link-group"><div class="link-label">Web App</div><div class="link-row"><a class="link link-app" href="https://homechef-uae.chefos.ai/dashboard" target="_blank">Live</a><a class="link link-app" href="#" onclick="startWeb('homechef_uae')">Dev</a></div></div>
+        <div class="link-group"><div class="link-label">Mobile</div><div class="link-row"><a class="link link-mobile" href="#" onclick="copyCmd('home-uae')">Expo</a></div></div>
+      </div>
+    </div>
+
+    <div class="app-row">
+      <div class="app-top"><div class="dot stream-eatsafe"></div><div class="app-name">EatSafe UAE</div></div>
+      <div class="app-links-grid">
+        <div class="link-group"><div class="link-label">Landing</div><div class="link-row"><a class="link link-landing" href="https://dubai.chefos.ai" target="_blank">dubai.*</a></div></div>
+        <div class="link-group"><div class="link-label">Web App</div><div class="link-row"><a class="link link-app" href="https://dubai.chefos.ai/dashboard" target="_blank">Live</a><a class="link link-app" href="#" onclick="startWeb('gcc_uae')">Dev</a></div></div>
+        <div class="link-group"><div class="link-label">Mobile</div><div class="link-row"><a class="link link-mobile" href="#" onclick="copyCmd('uae')">Expo</a></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- UK -->
+  <div class="section">
+    <div class="section-header">
+      <h2>United Kingdom</h2>
+      <span class="badge badge-uk">UK</span>
+    </div>
+
+    <div class="app-row">
+      <div class="app-top"><div class="dot stream-chefos"></div><div class="app-name">ChefOS UK</div></div>
+      <div class="app-links-grid">
+        <div class="link-group"><div class="link-label">Landing</div><div class="link-row"><a class="link link-landing" href="https://chefos-uk.chefos.ai" target="_blank">chefos-uk.*</a></div></div>
+        <div class="link-group"><div class="link-label">Web App</div><div class="link-row"><a class="link link-app" href="https://chefos-uk.chefos.ai/dashboard" target="_blank">Live</a><a class="link link-app" href="#" onclick="startWeb('chefos_uk')">Dev</a></div></div>
+        <div class="link-group"><div class="link-label">Mobile</div><div class="link-row"><a class="link link-mobile" href="#" onclick="copyCmd('chefos-uk')">Expo</a></div></div>
+      </div>
+    </div>
+
+    <div class="app-row">
+      <div class="app-top"><div class="dot stream-homechef"></div><div class="app-name">HomeChef UK</div></div>
+      <div class="app-links-grid">
+        <div class="link-group"><div class="link-label">Landing</div><div class="link-row"><a class="link link-landing" href="https://homechef-uk.chefos.ai" target="_blank">homechef-uk.*</a></div></div>
+        <div class="link-group"><div class="link-label">Web App</div><div class="link-row"><a class="link link-app" href="https://homechef-uk.chefos.ai/dashboard" target="_blank">Live</a><a class="link link-app" href="#" onclick="startWeb('homechef_uk')">Dev</a></div></div>
+        <div class="link-group"><div class="link-label">Mobile</div><div class="link-row"><a class="link link-mobile" href="#" onclick="copyCmd('home-uk')">Expo</a></div></div>
+      </div>
+    </div>
+
+    <div class="app-row">
+      <div class="app-top"><div class="dot stream-eatsafe"></div><div class="app-name">EatSafe London</div></div>
+      <div class="app-links-grid">
+        <div class="link-group"><div class="link-label">Landing</div><div class="link-row"><a class="link link-landing" href="https://london.chefos.ai" target="_blank">london.*</a></div></div>
+        <div class="link-group"><div class="link-label">Web App</div><div class="link-row"><a class="link link-app" href="https://london.chefos.ai/dashboard" target="_blank">Live</a><a class="link link-app" href="#" onclick="startWeb('eatsafe_london')">Dev</a></div></div>
+        <div class="link-group"><div class="link-label">Mobile</div><div class="link-row"><a class="link link-mobile" href="#" onclick="copyCmd('london')">Expo</a></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SINGAPORE -->
+  <div class="section">
+    <div class="section-header">
+      <h2>Singapore</h2>
+      <span class="badge badge-sg">SG</span>
+    </div>
+
+    <div class="app-row">
+      <div class="app-top"><div class="dot stream-chefos"></div><div class="app-name">ChefOS SG</div></div>
+      <div class="app-links-grid">
+        <div class="link-group"><div class="link-label">Landing</div><div class="link-row"><a class="link link-landing" href="https://chefos-sg.chefos.ai" target="_blank">chefos-sg.*</a></div></div>
+        <div class="link-group"><div class="link-label">Web App</div><div class="link-row"><a class="link link-app" href="https://chefos-sg.chefos.ai/dashboard" target="_blank">Live</a><a class="link link-app" href="#" onclick="startWeb('chefos_sg')">Dev</a></div></div>
+        <div class="link-group"><div class="link-label">Mobile</div><div class="link-row"><a class="link link-mobile" href="#" onclick="copyCmd('chefos-sg')">Expo</a></div></div>
+      </div>
+    </div>
+
+    <div class="app-row">
+      <div class="app-top"><div class="dot stream-homechef"></div><div class="app-name">HomeChef SG</div></div>
+      <div class="app-links-grid">
+        <div class="link-group"><div class="link-label">Landing</div><div class="link-row"><a class="link link-landing" href="https://homechef-sg.chefos.ai" target="_blank">homechef-sg.*</a></div></div>
+        <div class="link-group"><div class="link-label">Web App</div><div class="link-row"><a class="link link-app" href="https://homechef-sg.chefos.ai/dashboard" target="_blank">Live</a><a class="link link-app" href="#" onclick="startWeb('homechef_sg')">Dev</a></div></div>
+        <div class="link-group"><div class="link-label">Mobile</div><div class="link-row"><a class="link link-mobile" href="#" onclick="copyCmd('home-sg')">Expo</a></div></div>
+      </div>
+    </div>
+
+    <div class="app-row">
+      <div class="app-top"><div class="dot stream-eatsafe"></div><div class="app-name">EatSafe SG</div></div>
+      <div class="app-links-grid">
+        <div class="link-group"><div class="link-label">Landing</div><div class="link-row"><a class="link link-landing" href="https://sg.chefos.ai" target="_blank">sg.*</a></div></div>
+        <div class="link-group"><div class="link-label">Web App</div><div class="link-row"><a class="link link-app" href="https://sg.chefos.ai/dashboard" target="_blank">Live</a><a class="link link-app" href="#" onclick="startWeb('eatsafe_sg')">Dev</a></div></div>
+        <div class="link-group"><div class="link-label">Mobile</div><div class="link-row"><a class="link link-mobile" href="#" onclick="copyCmd('sg')">Expo</a></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- US -->
+  <div class="section">
+    <div class="section-header">
+      <h2>United States</h2>
+      <span class="badge badge-us">US</span>
+    </div>
+
+    <div class="app-row">
+      <div class="app-top"><div class="dot stream-chefos"></div><div class="app-name">ChefOS US</div></div>
+      <div class="app-links-grid">
+        <div class="link-group"><div class="link-label">Landing</div><div class="link-row"><a class="link link-landing" href="https://chefos-us.chefos.ai" target="_blank">chefos-us.*</a></div></div>
+        <div class="link-group"><div class="link-label">Web App</div><div class="link-row"><a class="link link-app" href="https://chefos-us.chefos.ai/dashboard" target="_blank">Live</a><a class="link link-app" href="#" onclick="startWeb('chefos_us')">Dev</a></div></div>
+        <div class="link-group"><div class="link-label">Mobile</div><div class="link-row"><a class="link link-mobile" href="#" onclick="copyCmd('chefos-us')">Expo</a></div></div>
+      </div>
+    </div>
+
+    <div class="app-row">
+      <div class="app-top"><div class="dot stream-homechef"></div><div class="app-name">HomeChef US</div></div>
+      <div class="app-links-grid">
+        <div class="link-group"><div class="link-label">Landing</div><div class="link-row"><a class="link link-landing" href="https://homechef-us.chefos.ai" target="_blank">homechef-us.*</a></div></div>
+        <div class="link-group"><div class="link-label">Web App</div><div class="link-row"><a class="link link-app" href="https://homechef-us.chefos.ai/dashboard" target="_blank">Live</a><a class="link link-app" href="#" onclick="startWeb('homechef_us')">Dev</a></div></div>
+        <div class="link-group"><div class="link-label">Mobile</div><div class="link-row"><a class="link link-mobile" href="#" onclick="copyCmd('home-us')">Expo</a></div></div>
+      </div>
+    </div>
+
+    <div class="app-row">
+      <div class="app-top"><div class="dot stream-eatsafe"></div><div class="app-name">EatSafe New York</div></div>
+      <div class="app-links-grid">
+        <div class="link-group"><div class="link-label">Landing</div><div class="link-row"><a class="link link-landing" href="https://ny.chefos.ai" target="_blank">ny.*</a></div></div>
+        <div class="link-group"><div class="link-label">Web App</div><div class="link-row"><a class="link link-app" href="https://ny.chefos.ai/dashboard" target="_blank">Live</a><a class="link link-app" href="#" onclick="startWeb('eatsafe_ny')">Dev</a></div></div>
+        <div class="link-group"><div class="link-label">Mobile</div><div class="link-row"><a class="link link-mobile" href="#" onclick="copyCmd('ny')">Expo</a></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STANDALONE -->
+  <div class="section">
+    <div class="section-header">
+      <h2>Standalone Apps</h2>
+      <span class="badge badge-standalone">Independent</span>
+    </div>
+
+    <div class="app-row">
+      <div class="app-top"><div class="dot stream-moneyos"></div><div class="app-name">MoneyOS</div></div>
+      <div class="app-links-grid">
+        <div class="link-group"><div class="link-label">Landing</div><div class="link-row"><a class="link link-landing" href="https://moneyos.chefos.ai" target="_blank">moneyos.*</a></div></div>
+        <div class="link-group"><div class="link-label">Web App</div><div class="link-row"><a class="link link-app" href="https://moneyos.chefos.ai/dashboard" target="_blank">Live</a><a class="link link-app" href="#" onclick="startWeb('moneyos')">Dev</a></div></div>
+        <div class="link-group"><div class="link-label">Mobile</div><div class="link-row"><a class="link link-mobile" href="#" onclick="copyCmd('moneyos')">Expo</a></div></div>
+      </div>
+    </div>
+
+    <div class="app-row">
+      <div class="app-top"><div class="dot stream-vendor"></div><div class="app-name">VendorOS</div></div>
+      <div class="app-links-grid">
+        <div class="link-group"><div class="link-label">Landing</div><div class="link-row"><a class="link link-landing" href="https://vendor.chefos.ai" target="_blank">vendor.*</a></div></div>
+        <div class="link-group"><div class="link-label">Web App</div><div class="link-row"><a class="link link-app" href="https://vendor.chefos.ai/vendor/dashboard" target="_blank">Live</a><a class="link link-app" href="#" onclick="startWeb('vendor')">Dev</a></div></div>
+        <div class="link-group"><div class="link-label">Mobile</div><div class="link-row"><a class="link link-mobile" href="#" onclick="copyCmd('vendor')">Expo</a></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONSUMER -->
+  <div class="section">
+    <div class="section-header">
+      <h2>Consumer</h2>
+      <span class="badge badge-consumer">B2C</span>
+    </div>
+
+    <div class="app-row">
+      <div class="app-top"><div class="dot stream-consumer"></div><div class="app-name">Nosh / Prep Mi</div></div>
+      <div class="app-links-grid">
+        <div class="link-group"><div class="link-label">Landing</div><div class="link-row"><a class="link link-landing" href="https://chefos.ai/nosh" target="_blank">chefos.ai/nosh</a></div></div>
+        <div class="link-group"><div class="link-label">Web App</div><div class="link-row"><a class="link link-app" href="https://chefos.ai/nosh/vendors" target="_blank">Vendors</a><a class="link link-app" href="https://chefos.ai/nosh/admin" target="_blank">Admin</a></div></div>
+        <div class="link-group"><div class="link-label">Mobile</div><div class="link-row"><a class="link link-mobile" href="#" onclick="copyCmd('nosh')">Expo</a></div></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Quick commands -->
+<div class="commands" style="margin-top: 24px;">
+  <h3>Quick Start Commands</h3>
+  <div class="cmd"><span># Web — landing + app (any variant)</span><br>cd apps/web && VITE_APP_VARIANT=<strong>chefos</strong> npm run dev</div>
+  <div class="cmd" style="margin-top: 6px;"><span># Mobile — interactive picker</span><br>cd apps/mobile && ./dev.sh</div>
+  <div class="cmd" style="margin-top: 6px;"><span># Mobile — direct variant + simulator</span><br>cd apps/mobile && ./dev.sh <strong>india</strong> --sim</div>
+  <div class="cmd" style="margin-top: 6px;"><span># Nosh consumer app</span><br>cd ~/dinners-sorted && npx expo start</div>
+</div>
+
+<div id="toast"></div>
+
+<footer>Queitos Monorepo &middot; 27 variants &middot; 6 streams &middot; 6 regions &middot; Landing + Web App + Mobile per variant</footer>
+
+<script>
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.display = 'block';
+  clearTimeout(t._timeout);
+  t._timeout = setTimeout(() => t.style.display = 'none', 2500);
+}
+
+function startWeb(variant) {
+  event.preventDefault();
+  const cmd = `cd apps/web && VITE_APP_VARIANT=${variant} npm run dev`;
+  navigator.clipboard.writeText(cmd).then(() => showToast('Copied: VITE_APP_VARIANT=' + variant));
+}
+
+function copyCmd(shortcut) {
+  event.preventDefault();
+  const cmd = `cd apps/mobile && ./dev.sh ${shortcut}`;
+  navigator.clipboard.writeText(cmd).then(() => showToast('Copied: ./dev.sh ' + shortcut));
+}
+</script>
+</body>
+</html>

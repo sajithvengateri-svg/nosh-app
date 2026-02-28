@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Queitos — App Portfolio</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0C1222; color: #E2E8F0; min-height: 100vh; }
+
+  /* Top bar */
+  .topbar { position: sticky; top: 0; z-index: 50; background: #0C1222ee; backdrop-filter: blur(12px); border-bottom: 1px solid #1E293B; padding: 14px 20px; }
+  .topbar-inner { max-width: 1400px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+  .topbar h1 { font-size: 20px; font-weight: 800; }
+  .topbar h1 span { color: #6366F1; }
+
+  /* Toggle row */
+  .toggles { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+  .toggle-btn { display: flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 20px; border: 1px solid #334155; background: #1E293B; cursor: pointer; transition: all 0.2s; font-size: 12px; font-weight: 600; color: #94A3B8; user-select: none; }
+  .toggle-btn:hover { border-color: #475569; }
+  .toggle-btn.active { border-color: #6366F1; background: #6366F120; color: #818CF8; }
+  .toggle-btn .flag { font-size: 14px; }
+  .toggle-btn .check { width: 14px; height: 14px; border-radius: 4px; border: 2px solid #475569; display: flex; align-items: center; justify-content: center; transition: all 0.2s; flex-shrink: 0; }
+  .toggle-btn.active .check { border-color: #6366F1; background: #6366F1; }
+  .toggle-btn.active .check::after { content: ''; display: block; width: 5px; height: 8px; border: solid #fff; border-width: 0 2px 2px 0; transform: rotate(45deg) translate(-1px, -1px); }
+
+  .divider { width: 1px; height: 24px; background: #334155; margin: 0 4px; }
+
+  .select-btns { display: flex; gap: 4px; }
+  .select-btns button { font-size: 10px; font-weight: 600; padding: 4px 8px; border-radius: 6px; border: 1px solid #334155; background: transparent; color: #64748B; cursor: pointer; }
+  .select-btns button:hover { color: #94A3B8; border-color: #475569; }
+
+  .share-url-btn { padding: 6px 14px; border-radius: 20px; border: 1px solid #10B981; background: #10B98118; color: #34D399; font-size: 12px; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+  .share-url-btn:hover { background: #10B98130; }
+
+  /* Content */
+  .content { max-width: 1400px; margin: 0 auto; padding: 24px 16px 60px; }
+  .summary { text-align: center; color: #64748B; font-size: 13px; margin-bottom: 24px; }
+  .summary strong { color: #94A3B8; }
+
+  /* Stats bar */
+  .stats { display: flex; gap: 20px; justify-content: center; margin-bottom: 24px; flex-wrap: wrap; }
+  .stat { text-align: center; }
+  .stat-num { font-size: 28px; font-weight: 800; color: #6366F1; }
+  .stat-label { font-size: 11px; color: #64748B; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* Grid */
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 16px; }
+  .section { background: #1E293B; border-radius: 16px; padding: 20px; border: 1px solid #334155; transition: opacity 0.3s, transform 0.3s; }
+  .section.hidden { display: none; }
+  .section-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid #334155; }
+  .section-header h2 { font-size: 15px; font-weight: 700; }
+  .badge { font-size: 9px; font-weight: 700; padding: 2px 7px; border-radius: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .badge-au { background: #3B82F620; color: #60A5FA; }
+  .badge-in { background: #F9731620; color: #FB923C; }
+  .badge-uae { background: #EAB30820; color: #FACC15; }
+  .badge-uk { background: #EC489920; color: #F472B6; }
+  .badge-sg { background: #EF444420; color: #F87171; }
+  .badge-us { background: #8B5CF620; color: #A78BFA; }
+  .badge-standalone { background: #10B98120; color: #34D399; }
+  .badge-consumer { background: #D9487820; color: #FB7185; }
+
+  .app-row { padding: 10px 0; border-bottom: 1px solid #334155; }
+  .app-row:last-child { border-bottom: none; }
+  .app-top { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+  .app-name { font-size: 14px; font-weight: 700; }
+  .app-desc { font-size: 11px; color: #64748B; margin-bottom: 8px; }
+
+  .app-links { display: flex; gap: 5px; flex-wrap: wrap; }
+  .link { display: inline-flex; align-items: center; gap: 3px; font-size: 11px; font-weight: 600; padding: 5px 10px; border-radius: 8px; text-decoration: none; transition: all 0.15s; cursor: pointer; white-space: nowrap; }
+  .link-landing { background: #F59E0B18; color: #FBBF24; border: 1px solid #F59E0B25; }
+  .link-landing:hover { background: #F59E0B30; }
+  .link-app { background: #6366F118; color: #818CF8; border: 1px solid #6366F125; }
+  .link-app:hover { background: #6366F130; }
+  .link-mobile { background: #10B98118; color: #34D399; border: 1px solid #10B98125; }
+  .link-mobile:hover { background: #10B98130; }
+  .link-city { background: #F59E0B10; color: #D97706; border: 1px solid #F59E0B15; font-size: 10px; }
+  .link-city:hover { background: #F59E0B25; }
+
+  .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .stream-chefos { background: #6366F1; }
+  .stream-homechef { background: #EC4899; }
+  .stream-eatsafe { background: #F59E0B; }
+  .stream-vendor { background: #8B5CF6; }
+  .stream-moneyos { background: #10B981; }
+  .stream-consumer { background: #D94878; }
+
+  .cities-row { display: flex; gap: 4px; flex-wrap: wrap; padding: 6px 0 2px 16px; }
+
+  .legend { display: flex; gap: 14px; justify-content: center; margin-bottom: 20px; flex-wrap: wrap; }
+  .legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: #94A3B8; }
+
+  footer { text-align: center; padding: 24px 16px; font-size: 11px; color: #334155; }
+
+  #toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: #10B981; color: #fff; padding: 10px 20px; border-radius: 10px; font-size: 12px; font-weight: 600; display: none; z-index: 100; box-shadow: 0 4px 12px #10B98140; }
+
+  @media (max-width: 500px) {
+    .grid { grid-template-columns: 1fr; }
+    .topbar-inner { flex-direction: column; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <h1><span>Queitos</span> App Portfolio</h1>
+    <div class="toggles">
+      <button class="toggle-btn active" data-region="au" onclick="toggleRegion(this)">
+        <span class="check"></span><span class="flag">🇦🇺</span> Australia
+      </button>
+      <button class="toggle-btn active" data-region="in" onclick="toggleRegion(this)">
+        <span class="check"></span><span class="flag">🇮🇳</span> India
+      </button>
+      <button class="toggle-btn active" data-region="uae" onclick="toggleRegion(this)">
+        <span class="check"></span><span class="flag">🇦🇪</span> UAE
+      </button>
+      <button class="toggle-btn active" data-region="uk" onclick="toggleRegion(this)">
+        <span class="check"></span><span class="flag">🇬🇧</span> UK
+      </button>
+      <button class="toggle-btn active" data-region="sg" onclick="toggleRegion(this)">
+        <span class="check"></span><span class="flag">🇸🇬</span> Singapore
+      </button>
+      <button class="toggle-btn active" data-region="us" onclick="toggleRegion(this)">
+        <span class="check"></span><span class="flag">🇺🇸</span> US
+      </button>
+      <button class="toggle-btn active" data-region="standalone" onclick="toggleRegion(this)">
+        <span class="check"></span> Standalone
+      </button>
+      <button class="toggle-btn active" data-region="consumer" onclick="toggleRegion(this)">
+        <span class="check"></span> Consumer
+      </button>
+      <div class="divider"></div>
+      <div class="select-btns">
+        <button onclick="selectAll()">All</button>
+        <button onclick="selectNone()">None</button>
+      </div>
+      <div class="divider"></div>
+      <button class="share-url-btn" onclick="copyShareURL()">Copy Share Link</button>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+  <div class="summary">Showing <strong id="visible-count">27</strong> of <strong>27</strong> app variants across <strong id="region-count">8</strong> regions</div>
+
+  <div class="stats" id="stats">
+    <div class="stat"><div class="stat-num" id="stat-variants">27</div><div class="stat-label">Variants</div></div>
+    <div class="stat"><div class="stat-num">6</div><div class="stat-label">Streams</div></div>
+    <div class="stat"><div class="stat-num" id="stat-regions">8</div><div class="stat-label">Regions</div></div>
+    <div class="stat"><div class="stat-num">3</div><div class="stat-label">Platforms</div></div>
+  </div>
+
+  <div class="legend">
+    <div class="legend-item"><div class="dot stream-chefos"></div> ChefOS</div>
+    <div class="legend-item"><div class="dot stream-homechef"></div> HomeChef</div>
+    <div class="legend-item"><div class="dot stream-eatsafe"></div> EatSafe</div>
+    <div class="legend-item"><div class="dot stream-vendor"></div> VendorOS</div>
+    <div class="legend-item"><div class="dot stream-moneyos"></div> MoneyOS</div>
+    <div class="legend-item"><div class="dot stream-consumer"></div> Nosh / Prep Mi</div>
+  </div>
+
+  <div class="grid">
+
+    <!-- AUSTRALIA -->
+    <div class="section" data-region="au">
+      <div class="section-header">
+        <h2>🇦🇺 Australia</h2>
+        <span class="badge badge-au">AU</span>
+        <span style="margin-left:auto; font-size:11px; color:#64748B;">3 apps + 7 cities</span>
+      </div>
+
+      <div class="app-row">
+        <div class="app-top"><div class="dot stream-chefos"></div><div class="app-name">ChefOS</div></div>
+        <div class="app-desc">Full kitchen operating system for commercial kitchens</div>
+        <div class="app-links">
+          <a class="link link-landing" href="https://chefos.ai" target="_blank">Landing</a>
+          <a class="link link-app" href="https://chefos.ai/dashboard" target="_blank">Web App</a>
+          <a class="link link-mobile" href="#">Mobile</a>
+        </div>
+      </div>
+
+      <div class="app-row">
+        <div class="app-top"><div class="dot stream-homechef"></div><div class="app-name">HomeChef</div></div>
+        <div class="app-desc">Kitchen companion for home cooks</div>
+        <div class="app-links">
+          <a class="link link-landing" href="https://homechef.chefos.ai" target="_blank">Landing</a>
+          <a class="link link-app" href="https://homechef.chefos.ai/dashboard" target="_blank">Web App</a>
+          <a class="link link-mobile" href="#">Mobile</a>
+        </div>
+      </div>
+
+      <div class="app-row">
+        <div class="app-top"><div class="dot stream-eatsafe"></div><div class="app-name">EatSafe</div></div>
+        <div class="app-desc">Food safety compliance for Australian councils</div>
+        <div class="app-links">
+          <a class="link link-landing" href="https://brisbane.chefos.ai" target="_blank">Landing</a>
+          <a class="link link-app" href="https://brisbane.chefos.ai/dashboard" target="_blank">Web App</a>
+          <a class="link link-mobile" href="#">Mobile</a>
+        </div>
+      </div>
+      <div class="cities-row">
+        <a class="link link-city" href="https://brisbane.chefos.ai" target="_blank">Brisbane</a>
+        <a class="link link-city" href="https://sydney.chefos.ai" target="_blank">Sydney</a>
+        <a class="link link-city" href="https://melbourne.chefos.ai" target="_blank">Melbourne</a>
+        <a class="link link-city" href="https://perth.chefos.ai" target="_blank">Perth</a>
+        <a class="link link-city" href="https://adelaide.chefos.ai" target="_blank">Adelaide</a>
+        <a class="link link-city" href="https://hobart.chefos.ai" target="_blank">Hobart</a>
+        <a class="link link-city" href="https://canberra.chefos.ai" target="_blank">Canberra</a>
+        <a class="link link-city" href="https://darwin.chefos.ai" target="_blank">Darwin</a>
+      </div>
+    </div>
+
+    <!-- INDIA -->
+    <div class="section" data-region="in">
+      <div class="section-header">
+        <h2>🇮🇳 India</h2>
+        <span class="badge badge-in">IN</span>
+        <span style="margin-left:auto; font-size:11px; color:#64748B;">3 apps</span>
+      </div>
+
+      <div class="app-row">
+        <div class="app-top"><div class="dot stream-chefos"></div><div class="app-name">ChefOS India</div></div>
+        <div class="app-desc">Kitchen management localized for India</div>
+        <div class="app-links">
+          <a class="link link-landing" href="https://chefos-in.chefos.ai" target="_blank">Landing</a>
+          <a class="link link-app" href="https://chefos-in.chefos.ai/dashboard" target="_blank">Web App</a>
+          <a class="link link-mobile" href="#">Mobile</a>
+        </div>
+      </div>
+
+      <div class="app-row">
+        <div class="app-top"><div class="dot stream-homechef"></div><div class="app-name">HomeChef India</div></div>
+        <div class="app-desc">Home cooking companion for Indian kitchens</div>
+        <div class="app-links">
+          <a class="link link-landing" href="https://homechef-in.chefos.ai" target="_blank">Landing</a>
+          <a class="link link-app" href="https://homechef-in.chefos.ai/dashboard" target="_blank">Web App</a>
+          <a class="link link-mobile" href="#">Mobile</a>
+        </div>
+      </div>
+
+      <div class="app-row">
+        <div class="app-top"><div class="dot stream-eatsafe"></div><div class="app-name">EatSafe India (FSSAI)</div></div>
+        <div class="app-desc">FSSAI compliance and food safety audits</div>
+        <div class="app-links">
+          <a class="link link-landing" href="https://india.chefos.ai" target="_blank">Landing</a>
+          <a class="link link-app" href="https://india.chefos.ai/dashboard" target="_blank">Web App</a>
+          <a class="link link-mobile" href="#">Mobile</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- UAE -->
+    <div class="section" data-region="uae">
+      <div class="section-header">
+        <h2>🇦🇪 UAE / GCC</h2>
+        <span class="badge badge-uae">UAE</span>
+        <span style="margin-left:auto; font-size:11px; color:#64748B;">3 apps</span>
+      </div>
+
+      <div class="app-row">
+        <div class="app-top"><div class="dot stream-chefos"></div><div class="app-name">ChefOS UAE</div></div>
+        <div class="app-desc">Kitchen OS for UAE & GCC region</div>
+        <div class="app-links">
+          <a class="link link-landing" href="https://chefos-uae.chefos.ai" target="_blank">Landing</a>
+          <a class="link link-app" href="https://chefos-uae.chefos.ai/dashboard" target="_blank">Web App</a>
+          <a class="link link-mobile" href="#">Mobile</a>
+        </div>
+      </div>
+
+      <div class="app-row">
+        <div class="app-top"><div class="dot stream-homechef"></div><div class="app-name">HomeChef UAE</div></div>
+        <div class="app-desc">Home cooking companion for UAE</div>
+        <div class="app-links">
+          <a class="link link-landing" href="https://homechef-uae.chefos.ai" target="_blank">Landing</a>
+          <a class="link link-app" href="https://homechef-uae.chefos.ai/dashboard" target="_blank">Web App</a>
+          <a class="link link-mobile" href="#">Mobile</a>
+        </div>
+      </div>
+
+      <div class="app-row">
+        <div class="app-top"><div class="dot stream-eatsafe"></div><div class="app-name">EatSafe UAE</div></div>
+        <div class="app-desc">Dubai Municipality food safety compliance</div>
+        <div class="app-links">
+          <a class="link link-landing" href="https://dubai.chefos.ai" target="_blank">Landing</a>
+          <a class="link link-app" href="https://dubai.chefos.ai/dashboard" target="_blank">Web App</a>
+          <a class="link link-mobile" href="#">Mobile</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- UK -->
+    <div class="section" data-region="uk">
+      <div class="section-header">
+        <h2>🇬🇧 United Kingdom</h2>
+        <span class="badge badge-uk">UK</span>
+        <span style="margin-left:auto; font-size:11px; color:#64748B;">3 apps</span>
+      </div>
+
+      <div class="app-row">
+        <div class="app-top"><div class="dot stream-chefos"></div><div class="app-name">ChefOS UK</div></div>
+        <div class="app-desc">Kitchen management for UK hospitality</div>
+        <div class="app-links">
+          <a class="link link-landing" href="https://chefos-uk.chefos.ai" target="_blank">Landing</a>
+          <a class="link link-app" href="https://chefos-uk.chefos.ai/dashboard" target="_blank">Web App</a>
+          <a class="link link-mobile" href="#">Mobile</a>
+        </div>
+      </div>
+
+      <div class="app-row">
+        <div class="app-top"><div class="dot stream-homechef"></div><div class="app-name">HomeChef UK</div></div>
+        <div class="app-desc">Home cooking companion for the UK</div>
+        <div class="app-links">
+          <a class="link link-landing" href="https://homechef-uk.chefos.ai" target="_blank">Landing</a>
+          <a class="link link-app" href="https://homechef-uk.chefos.ai/dashboard" target="_blank">Web App</a>
+          <a class="link link-mobile" href="#">Mobile</a>
+        </div>
+      </div>
+
+      <div class="app-row">
+        <div class="app-top"><div class="dot stream-eatsafe"></div><div class="app-name">EatSafe London</div></div>
+        <div class="app-desc">UK food hygiene rating compliance</div>
+        <div class="app-links">
+          <a class="link link-landing" href="https://london.chefos.ai" target="_blank">Landing</a>
+          <a class="link link-app" href="https://london.chefos.ai/dashboard" target="_blank">Web App</a>
+          <a class="link link-mobile" href="#">Mobile</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- SINGAPORE -->
+    <div class="section" data-region="sg">
+      <div class="section-header">
+        <h2>🇸🇬 Singapore</h2>
+        <span class="badge badge-sg">SG</span>
+        <span style="margin-left:auto; font-size:11px; color:#64748B;">3 apps</span>
+      </div>
+
+      <div class="app-row">
+        <div class="app-top"><div class="dot stream-chefos"></div><div class="app-name">ChefOS SG</div></div>
+        <div class="app-desc">Kitchen management for Singapore F&B</div>
+        <div class="app-links">
+          <a class="link link-landing" href="https://chefos-sg.chefos.ai" target="_blank">Landing</a>
+          <a class="link link-app" href="https://chefos-sg.chefos.ai/dashboard" target="_blank">Web App</a>
+          <a class="link link-mobile" href="#">Mobile</a>
+        </div>
+      </div>
+
+      <div class="app-row">
+        <div class="app-top"><div class="dot stream-homechef"></div><div class="app-name">HomeChef SG</div></div>
+        <div class="app-desc">Home cooking companion for Singapore</div>
+        <div class="app-links">
+          <a class="link link-landing" href="https://homechef-sg.chefos.ai" target="_blank">Landing</a>
+          <a class="link link-app" href="https://homechef-sg.chefos.ai/dashboard" target="_blank">Web App</a>
+          <a class="link link-mobile" href="#">Mobile</a>
+        </div>
+      </div>
+
+      <div class="app-row">
+        <div class="app-top"><div class="dot stream-eatsafe"></div><div class="app-name">EatSafe SG</div></div>
+        <div class="app-desc">SFA food safety compliance</div>
+        <div class="app-links">
+          <a class="link link-landing" href="https://sg.chefos.ai" target="_blank">Landing</a>
+          <a class="link link-app" href="https://sg.chefos.ai/dashboard" target="_blank">Web App</a>
+          <a class="link link-mobile" href="#">Mobile</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- US -->
+    <div class="section" data-region="us">
+      <div class="section-header">
+        <h2>🇺🇸 United States</h2>
+        <span class="badge badge-us">US</span>
+        <span style="margin-left:auto; font-size:11px; color:#64748B;">3 apps</span>
+      </div>
+
+      <div class="app-row">
+        <div class="app-top"><div class="dot stream-chefos"></div><div class="app-name">ChefOS US</div></div>
+        <div class="app-desc">Kitchen management for US restaurants</div>
+        <div class="app-links">
+          <a class="link link-landing" href="https://chefos-us.chefos.ai" target="_blank">Landing</a>
+          <a class="link link-app" href="https://chefos-us.chefos.ai/dashboard" target="_blank">Web App</a>
+          <a class="link link-mobile" href="#">Mobile</a>
+        </div>
+      </div>
+
+      <div class="app-row">
+        <div class="app-top"><div class="dot stream-homechef"></div><div class="app-name">HomeChef US</div></div>
+        <div class="app-desc">Home cooking companion for the US</div>
+        <div class="app-links">
+          <a class="link link-landing" href="https://homechef-us.chefos.ai" target="_blank">Landing</a>
+          <a class="link link-app" href="https://homechef-us.chefos.ai/dashboard" target="_blank">Web App</a>
+          <a class="link link-mobile" href="#">Mobile</a>
+        </div>
+      </div>
+
+      <div class="app-row">
+        <div class="app-top"><div class="dot stream-eatsafe"></div><div class="app-name">EatSafe New York</div></div>
+        <div class="app-desc">NYC Health Department compliance</div>
+        <div class="app-links">
+          <a class="link link-landing" href="https://ny.chefos.ai" target="_blank">Landing</a>
+          <a class="link link-app" href="https://ny.chefos.ai/dashboard" target="_blank">Web App</a>
+          <a class="link link-mobile" href="#">Mobile</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- STANDALONE -->
+    <div class="section" data-region="standalone">
+      <div class="section-header">
+        <h2>Standalone Apps</h2>
+        <span class="badge badge-standalone">Independent</span>
+        <span style="margin-left:auto; font-size:11px; color:#64748B;">2 apps</span>
+      </div>
+
+      <div class="app-row">
+        <div class="app-top"><div class="dot stream-moneyos"></div><div class="app-name">MoneyOS</div></div>
+        <div class="app-desc">Financial operating system for restaurants — P&L, cash flow, alerts</div>
+        <div class="app-links">
+          <a class="link link-landing" href="https://moneyos.chefos.ai" target="_blank">Landing</a>
+          <a class="link link-app" href="https://moneyos.chefos.ai/dashboard" target="_blank">Web App</a>
+          <a class="link link-mobile" href="#">Mobile</a>
+        </div>
+      </div>
+
+      <div class="app-row">
+        <div class="app-top"><div class="dot stream-vendor"></div><div class="app-name">VendorOS</div></div>
+        <div class="app-desc">Supply chain management for food vendors and suppliers</div>
+        <div class="app-links">
+          <a class="link link-landing" href="https://vendor.chefos.ai" target="_blank">Landing</a>
+          <a class="link link-app" href="https://vendor.chefos.ai/vendor/dashboard" target="_blank">Web App</a>
+          <a class="link link-mobile" href="#">Mobile</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONSUMER -->
+    <div class="section" data-region="consumer">
+      <div class="section-header">
+        <h2>Consumer</h2>
+        <span class="badge badge-consumer">B2C</span>
+        <span style="margin-left:auto; font-size:11px; color:#64748B;">1 app</span>
+      </div>
+
+      <div class="app-row">
+        <div class="app-top"><div class="dot stream-consumer"></div><div class="app-name">Prep Mi</div></div>
+        <div class="app-desc">Consumer food marketplace — discover, order, and connect with local chefs</div>
+        <div class="app-links">
+          <a class="link link-landing" href="https://chefos.ai/nosh" target="_blank">Landing</a>
+          <a class="link link-app" href="https://chefos.ai/nosh/vendors" target="_blank">Web App</a>
+          <a class="link link-mobile" href="#">Mobile</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<footer>Queitos &mdash; One monorepo, every market, every platform</footer>
+
+<div id="toast"></div>
+
+<script>
+const VARIANT_COUNTS = { au: 3, in: 3, uae: 3, uk: 3, sg: 3, us: 3, standalone: 2, consumer: 1 };
+const ALL_REGIONS = Object.keys(VARIANT_COUNTS);
+
+// Read initial state from URL params
+function getInitialState() {
+  const params = new URLSearchParams(window.location.search);
+  const state = {};
+  // If no params at all, default all on
+  if (params.toString() === '') {
+    ALL_REGIONS.forEach(r => state[r] = true);
+    return state;
+  }
+  ALL_REGIONS.forEach(r => {
+    state[r] = params.get(r) !== '0';
+  });
+  return state;
+}
+
+let regionState = getInitialState();
+
+function applyState() {
+  // Update toggle buttons
+  document.querySelectorAll('.toggle-btn[data-region]').forEach(btn => {
+    const region = btn.dataset.region;
+    btn.classList.toggle('active', regionState[region]);
+  });
+
+  // Show/hide sections
+  document.querySelectorAll('.section[data-region]').forEach(section => {
+    const region = section.dataset.region;
+    section.classList.toggle('hidden', !regionState[region]);
+  });
+
+  // Update counts
+  let visibleVariants = 0;
+  let visibleRegions = 0;
+  ALL_REGIONS.forEach(r => {
+    if (regionState[r]) {
+      visibleVariants += VARIANT_COUNTS[r];
+      visibleRegions++;
+    }
+  });
+  document.getElementById('visible-count').textContent = visibleVariants;
+  document.getElementById('region-count').textContent = visibleRegions;
+  document.getElementById('stat-variants').textContent = visibleVariants;
+  document.getElementById('stat-regions').textContent = visibleRegions;
+
+  // Update URL without reload
+  const params = new URLSearchParams();
+  ALL_REGIONS.forEach(r => {
+    if (!regionState[r]) params.set(r, '0');
+  });
+  const qs = params.toString();
+  const newUrl = window.location.pathname + (qs ? '?' + qs : '');
+  history.replaceState(null, '', newUrl);
+}
+
+function toggleRegion(btn) {
+  const region = btn.dataset.region;
+  regionState[region] = !regionState[region];
+  applyState();
+}
+
+function selectAll() {
+  ALL_REGIONS.forEach(r => regionState[r] = true);
+  applyState();
+}
+
+function selectNone() {
+  ALL_REGIONS.forEach(r => regionState[r] = false);
+  applyState();
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.display = 'block';
+  clearTimeout(t._timeout);
+  t._timeout = setTimeout(() => t.style.display = 'none', 2500);
+}
+
+function copyShareURL() {
+  const url = window.location.href;
+  navigator.clipboard.writeText(url).then(() => showToast('Share link copied!'));
+}
+
+// Initialize
+applyState();
+</script>
+</body>
+</html>
