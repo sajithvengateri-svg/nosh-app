@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { OrgProvider } from "@/contexts/OrgContext";
 import { VoiceCommandProvider } from "@/contexts/VoiceCommandContext";
@@ -389,15 +389,17 @@ const App = () => (
               <Route path="/join-shift/:token" element={<JoinShift />} />
               <Route path="/vendor-landing" element={<VendorLanding />} />
               <Route path="/nosh" element={<NoshConsumerLanding />} />
-              <Route path="/prepmi" element={<NoshConsumerLanding />} />
-              <Route path="/prepmi/auth" element={<NoshAuth />} />
-              <Route path="/prepmi/welcome" element={<NoshWelcome />} />
-              <Route path="/prepmi/vendors" element={<NoshVendorLanding />} />
               <Route path="/nosh/vendors" element={<NoshVendorLanding />} />
               <Route path="/nosh/auth" element={<NoshAuth />} />
               <Route path="/nosh/admin" element={<NoshAdmin />} />
               <Route path="/nosh/welcome" element={<NoshWelcome />} />
-              <Route path="/food-safety" element={<FoodSafetyLanding />} />
+              {/* Redirect legacy /prepmi paths to canonical /nosh */}
+              <Route path="/prepmi" element={<Navigate to="/nosh" replace />} />
+              <Route path="/prepmi/auth" element={<Navigate to="/nosh/auth" replace />} />
+              <Route path="/prepmi/welcome" element={<Navigate to="/nosh/welcome" replace />} />
+              <Route path="/prepmi/vendors" element={<Navigate to="/nosh/vendors" replace />} />
+              <Route path="/prepmi/admin" element={<Navigate to="/nosh/admin" replace />} />
+              <Route path="/food-safety-landing" element={<FoodSafetyLanding />} />
               <Route path="/chefos-india" element={<IndianChefOSLanding />} />
               <Route path="/chefos-gcc" element={<GCCChefOSLanding />} />
               <Route path="/home-cook-india" element={<IndiaHomeCookLanding />} />

@@ -24,7 +24,7 @@ const liveLinks: LinkCard[] = [
   { label: "Admin Login", path: "/admin/auth", description: "Control centre access — admin only", icon: <Shield className="w-5 h-5" />, live: true },
   { label: "Dev Launcher", path: "/launch", description: "Internal module selector (all portals)", icon: <Rocket className="w-5 h-5" />, live: true },
   { label: "Vendor Landing", path: "/vendor-landing", description: "Vendor marketplace — connect suppliers with chefs", icon: <Truck className="w-5 h-5" />, live: true },
-  { label: "Food Safety Landing", path: "/food-safety", description: "Brisbane BCC Eat Safe compliance landing page", icon: <Shield className="w-5 h-5" />, live: true },
+  { label: "Food Safety Landing", path: "/food-safety-landing", description: "Brisbane BCC Eat Safe compliance landing page", icon: <Shield className="w-5 h-5" />, live: true },
   { label: "India ChefOS Landing", path: "/chefos-india", description: "ChefOS India market landing page", icon: <ChefHat className="w-5 h-5" />, live: true },
 ];
 

@@ -19,7 +19,7 @@ export const PAGE_LINKS: PageLink[] = [
   { label: "Home", path: "/", type: "landing", sitemapPriority: 1.0, sitemapFreq: "weekly" },
   { label: "Home Cook", path: "/home-cook", type: "landing", sitemapPriority: 0.8, sitemapFreq: "monthly" },
   { label: "Vendor Landing", path: "/vendor-landing", type: "landing", sitemapPriority: 0.8, sitemapFreq: "monthly" },
-  { label: "Food Safety", path: "/food-safety", type: "landing", sitemapPriority: 0.8, sitemapFreq: "monthly" },
+  { label: "Food Safety", path: "/food-safety-landing", type: "landing", sitemapPriority: 0.8, sitemapFreq: "monthly" },
   { label: "India ChefOS", path: "/chefos-india", type: "landing", sitemapPriority: 0.8, sitemapFreq: "monthly" },
   { label: "GCC ChefOS", path: "/chefos-gcc", type: "landing", sitemapPriority: 0.8, sitemapFreq: "monthly" },
   { label: "India Home Cook", path: "/home-cook-india", type: "landing", sitemapPriority: 0.7, sitemapFreq: "monthly" },

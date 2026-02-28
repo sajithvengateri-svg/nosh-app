@@ -47,11 +47,11 @@ export const SEO: Record<string, PageSEO> = {
     canonical: `${BASE}/vendor-landing`,
   },
 
-  "/food-safety": {
+  "/food-safety-landing": {
     title: "EatSafe by ChefOS — Digital Food Safety & HACCP",
     description:
       "Digitise your food safety with EatSafe. Temperature logs, cleaning checklists, audit reports and HACCP compliance — paperless and real-time.",
-    canonical: `${BASE}/food-safety`,
+    canonical: `${BASE}/food-safety-landing`,
   },
 
   "/chefos-india": {

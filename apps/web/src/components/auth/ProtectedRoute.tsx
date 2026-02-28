@@ -31,7 +31,8 @@ const ProtectedRoute = ({ children, module, requireEdit = false }: ProtectedRout
     // Redirect to appropriate auth based on the current path
     const isVendorRoute = location.pathname.startsWith("/vendor");
     const isAdminRoute = location.pathname.startsWith("/admin");
-    const authPath = isVendorRoute ? "/vendor/auth" : isAdminRoute ? "/admin/auth" : "/auth";
+    const isNoshRoute = location.pathname.startsWith("/nosh") || location.pathname.startsWith("/prepmi");
+    const authPath = isVendorRoute ? "/vendor/auth" : isAdminRoute ? "/admin/auth" : isNoshRoute ? "/nosh/auth" : "/auth";
     return <Navigate to={authPath} state={{ from: location }} replace />;
   }
 

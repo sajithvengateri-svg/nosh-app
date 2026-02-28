@@ -5,7 +5,7 @@ const AdminFoodSafetyLanding = () => (
   <LandingPageEditor
     pageTitle="Food Safety Landing Page"
     pageSubtitle="Edit the Food Safety Brisbane / BCC Eat Safe landing page"
-    previewUrl="/food-safety"
+    previewUrl="/food-safety-landing"
     tableName="food_safety_landing_sections"
     useSectionsHook={useFoodSafetyLandingSections}
   />

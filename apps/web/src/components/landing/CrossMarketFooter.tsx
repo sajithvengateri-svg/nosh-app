@@ -10,7 +10,7 @@ interface CrossMarketFooterProps {
 }
 
 const REGION_ROUTES: Record<Region, Record<Product, string>> = {
-  au:    { chefos: "/",              homecook: "/home-cook",       foodsafety: "/food-safety" },
+  au:    { chefos: "/",              homecook: "/home-cook",       foodsafety: "/food-safety-landing" },
   india: { chefos: "/chefos-india",  homecook: "/home-cook-india", foodsafety: "/food-safety-india" },
   gcc:   { chefos: "/chefos-gcc",    homecook: "/home-cook-gcc",   foodsafety: "/food-safety-gcc" },
 };

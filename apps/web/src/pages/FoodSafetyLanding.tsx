@@ -49,7 +49,7 @@ const FadeUp = ({ children, className = "", delay = 0 }: { children: React.React
 );
 
 const FoodSafetyLanding = () => {
-  useSEO(SEO["/food-safety"]);
+  useSEO(SEO["/food-safety-landing"]);
   const navigate = useNavigate();
   const { sectionMap, isVisible, isLoading } = useFoodSafetyLandingSections();
   const { isAdmin } = useAdminAuth();
@@ -110,7 +110,7 @@ const FoodSafetyLanding = () => {
       {/* ═══ Sticky Header ═══ */}
       <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? "bg-white/95 backdrop-blur-md border-b border-gray-200 shadow-sm" : "bg-white/80 backdrop-blur-sm"}`}>
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate("/food-safety")}>
+          <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate("/food-safety-landing")}>
             <Shield className="w-7 h-7 text-blue-600" />
             <span className="text-xl font-bold text-gray-900">Food Safety <span className="text-blue-600">OS</span></span>
           </div>
