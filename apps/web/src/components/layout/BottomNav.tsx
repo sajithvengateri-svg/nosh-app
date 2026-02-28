@@ -27,13 +27,13 @@ const iconMap: Record<string, React.ElementType> = {
   ListChecks, Gamepad2,
 };
 
-// Fixed 5-tab layout for home cook mode
+// Fixed 5-tab layout for home cook mode (mirrors mobile)
 const HOME_COOK_TABS = [
   { path: "/dashboard", icon: null, label: "Home", isHome: true },
   { path: "/recipes", icon: BookOpen, label: "My Recipes" },
   { path: "/kitchen", icon: Utensils, label: "My Kitchen" },
-  { path: "/todo", icon: ListChecks, label: "Todo", hasBadge: true },
-  { path: "/settings", icon: Settings, label: "Settings" },
+  { path: "/food-safety", icon: Shield, label: "Safety" },
+  { path: "/games", icon: Gamepad2, label: "Games" },
 ];
 
 const BottomNav = ({ className }: BottomNavProps) => {
