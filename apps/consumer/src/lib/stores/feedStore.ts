@@ -21,7 +21,7 @@ interface FeedState {
   setCards: (cards: FeedCardItem[]) => void;
   appendCards: (cards: FeedCardItem[]) => void;
   prependCard: (card: FeedCardItem) => void;
-  dismissCard: (id: string) => void;
+  dismissCard: (id: string, permanent?: boolean) => void;
   likeCard: (id: string) => void;
   saveCard: (id: string) => void;
   thumbsDown: (id: string, reason?: string) => void;
@@ -45,7 +45,7 @@ export const useFeedStore = create<FeedState>((set, get) => ({
       cards: [s.cards[0], card, ...s.cards.slice(1)].filter(Boolean) as FeedCardItem[],
     })),
 
-  dismissCard: (id) => {
+  dismissCard: (id, permanent = false) => {
     set((s) => {
       const dismissedIds = new Set(s.dismissedIds);
       dismissedIds.add(id);
@@ -56,7 +56,10 @@ export const useFeedStore = create<FeedState>((set, get) => ({
     });
 
     // Persist cooldown (fire-and-forget)
-    const cooldownUntil = calculateCooldownDate({ reason: "dismissed" });
+    // permanent = true → never come back; false → 14-day cooldown
+    const cooldownUntil = permanent
+      ? new Date(Date.now() + 365 * 10 * 24 * 60 * 60 * 1000) // ~10 years
+      : calculateCooldownDate({ reason: "dismissed" });
     supabase
       .from("ds_recipe_cooldowns")
       .upsert(

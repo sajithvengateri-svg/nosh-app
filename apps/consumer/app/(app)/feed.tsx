@@ -55,6 +55,9 @@ import { PersonalityQuizOverlay } from "../../src/features/workflows/personality
 import { RecipeLifecycleOverlay } from "../../src/features/workflows/recipeLifecycle/RecipeLifecycleOverlay";
 import { useDevAccess } from "../../src/lib/devAccess";
 import { useTrackingStore } from "../../src/lib/stores/trackingStore";
+import { useAuth } from "../../src/contexts/AuthProvider";
+import { supabase } from "../../src/lib/supabase";
+import { checkDismissMismatch } from "../../src/lib/engines/recyclingEngine";
 import { ShoppingPageOverlay } from "../../src/features/shopping";
 import { NudgeAdminPanel } from "../../src/features/admin/NudgeAdminPanel";
 
@@ -76,7 +79,7 @@ const OVERLAY_TITLES: Record<string, string> = {
   my_recipes: "My Recipes",
   meal_plan: "My Plan",
   settings: "Settings",
-  chat: "Prep Mi Companion",
+  chat: "Companion",
   nosh_run: "Prep Run",
   social_cooking: "Social Prep",
   nosh_dna: "Your Prep DNA",
@@ -102,6 +105,7 @@ export default function FeedScreen() {
   const setCommunicationMode = useCompanionStore((s) => s.setCommunicationMode);
   const setTextNavVisible = useCompanionStore((s) => s.setTextNavVisible);
   const communicationMode = useCompanionStore((s) => s.communicationMode);
+  const companionName = useCompanionStore((s) => s.companionName);
 
   const isSmartNav = useSettingsStore((s) => s.smartNav);
 
@@ -278,7 +282,7 @@ export default function FeedScreen() {
         />
       ) : activeScreen === "page" && activePage ? (
         <PageContainer
-          title={OVERLAY_TITLES[activePage] ?? ""}
+          title={activePage === "chat" ? `${companionName}` : (OVERLAY_TITLES[activePage] ?? "")}
           onBack={() => {
             setActiveScreen("canvas");
             setActivePage(null);
@@ -297,22 +301,49 @@ export default function FeedScreen() {
         <FeedView
           onOpenOverlay={openPage}
           onCardTap={(item) => {
-            if (item.type === "recipe" && item.data?.id) {
-              const recipeId = item.data.id;
-              const title = item.data.title ?? "This recipe";
-              Alert.alert(title, "What would you like to do?", [
-                {
-                  text: "Cook Now",
-                  onPress: () => router.push(`/(app)/cook-mode/${recipeId}`),
-                },
-                {
-                  text: "View Recipe",
-                  onPress: () => router.push(`/(app)/recipe/${recipeId}`),
-                },
-                { text: "Cancel", style: "cancel" },
-              ]);
-            } else {
-              setDetailItem(item);
+            const d = item.data;
+            switch (item.type) {
+              case "recipe":
+                if (d?.id) {
+                  Alert.alert(d.title ?? "Recipe", "What would you like to do?", [
+                    { text: "Cook Now", onPress: () => router.push(`/(app)/cook-mode/${d.id}`) },
+                    { text: "View Recipe", onPress: () => router.push(`/(app)/recipe/${d.id}`) },
+                    { text: "Cancel", style: "cancel" },
+                  ]);
+                }
+                break;
+              case "ready_to_cook":
+                if (d?.recipeId) {
+                  Alert.alert(d.recipeTitle ?? "Ready to Cook", "Start cooking?", [
+                    { text: "Cook Now", onPress: () => router.push(`/(app)/cook-mode/${d.recipeId}`) },
+                    { text: "View Recipe", onPress: () => router.push(`/(app)/recipe/${d.recipeId}`) },
+                    { text: "Cancel", style: "cancel" },
+                  ]);
+                }
+                break;
+              case "leftover_suggestion":
+                // Open leftovers page
+                openPage("leftovers");
+                break;
+              case "savings":
+                openPage("savings");
+                break;
+              case "nosh_dna":
+                openPage("nosh_dna");
+                break;
+              case "nosh_plus":
+                router.push("/(app)/nosh-plus/");
+                break;
+              case "social_event":
+                openPage("social_cooking");
+                break;
+              case "expiry_alert":
+                openPage("pantry");
+                break;
+              default:
+                // wine_pairing, cocktail, tip, vendor, chef_spotlight, etc.
+                setDetailItem(item);
+                break;
             }
           }}
         />
@@ -368,6 +399,7 @@ export default function FeedScreen() {
 // ── Feed View (doom scroll) ───────────────────────────────────────
 function FeedView({ onOpenOverlay, onCardTap }: { onOpenOverlay: (key: string) => void; onCardTap?: (item: FeedCardItem) => void }) {
   const { cards, isLoading, refreshFeed } = useFeedEngine();
+  const { profile } = useAuth();
   const dismissCard = useFeedStore((s) => s.dismissCard);
   const addFavourite = useFavouritesStore((s) => s.addFavourite);
   const setActiveScreen = useCompanionStore((s) => s.setActiveScreen);
@@ -384,20 +416,20 @@ function FeedView({ onOpenOverlay, onCardTap }: { onOpenOverlay: (key: string) =
 
   const handleSwipeRight = useCallback(
     (item: FeedCardItem) => {
-      // Track swipe
       useTrackingStore.getState().logFeedSwipe({
         card_id: item.id,
         card_type: item.type,
         swipe_direction: "right",
       });
-      if (item.data?.recipeId || item.data?.id) {
+
+      // Save to favourites (recipes, wine pairings, cocktails)
+      const saveable = ["recipe", "wine_pairing", "cocktail", "leftover_suggestion", "ready_to_cook"];
+      if (saveable.includes(item.type) && (item.data?.recipeId || item.data?.id)) {
         addFavourite(item.data.recipeId ?? item.data.id);
       }
+
+      // Remove from feed (temporary — can resurface later)
       dismissCard(item.id);
-      // Recipe cards → navigate to recipe detail
-      if (item.type === "recipe" && item.data?.id) {
-        router.push(`/(app)/recipe/${item.data.id}`);
-      }
     },
     [addFavourite, dismissCard],
   );
@@ -409,9 +441,36 @@ function FeedView({ onOpenOverlay, onCardTap }: { onOpenOverlay: (key: string) =
         card_type: item.type,
         swipe_direction: "left",
       });
-      dismissCard(item.id);
+      // Permanent dismiss — never show again in feed
+      dismissCard(item.id, true);
+
+      // Mismatch check — did they dismiss a recipe from a cuisine they like?
+      if (item.type === "recipe" && item.data?.cuisine) {
+        const mismatch = checkDismissMismatch(
+          item.id,
+          item.data.title ?? "",
+          item.data.cuisine,
+          profile?.cuisine_preferences ?? [],
+          [], // likedCuisines would need cook log — keep simple for now
+        );
+        if (mismatch) {
+          supabase
+            .from("ds_dismiss_mismatches")
+            .upsert(
+              {
+                recipe_id: mismatch.recipeId,
+                recipe_title: mismatch.recipeTitle,
+                cuisine: mismatch.cuisine,
+              },
+              { onConflict: "user_id,recipe_id" },
+            )
+            .then(({ error }) => {
+              if (error) console.warn("mismatch log:", error.message);
+            });
+        }
+      }
     },
-    [dismissCard],
+    [dismissCard, profile],
   );
 
   return (

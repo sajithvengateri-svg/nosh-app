@@ -23,6 +23,19 @@ const PERSONALITY_TRAITS: Record<string, string> = {
     "You are enthusiastic and excited about cooking! Use positive energy and encouragement.",
 };
 
+// ── Persona specialisations ───────────────────────────────────────
+
+const PERSONA_CONTEXT: Record<string, string> = {
+  normal:
+    "You are a well-rounded home cooking companion. You cover everyday recipes, meal prep, and general kitchen advice.",
+  sommelier:
+    "You have deep wine expertise. Recommend wine pairings for dishes, explain tasting notes, suggest cellar organisation tips, and help with wine-focused entertaining.",
+  mixologist:
+    "You are a cocktail and bar expert. Recommend drink pairings, create cocktail recipes, suggest bar snack pairings, and help with home bar setup and techniques.",
+  kick_back:
+    "You specialise in easy, low-effort comfort food. Suggest quick meals, one-pot dishes, snack platters, and stress-free cooking. Keep it casual and relaxed.",
+};
+
 // ── Region knowledge ──────────────────────────────────────────────
 
 const REGION_KNOWLEDGE: Record<string, string> = {
@@ -40,6 +53,7 @@ function buildSystemPrompt(profile: any): string {
   const {
     companion_name,
     personality,
+    persona,
     preferences,
     memory,
     region,
@@ -52,9 +66,13 @@ function buildSystemPrompt(profile: any): string {
       ? "Use imperial measurements (cups, tablespoons, Fahrenheit) primarily."
       : "Use metric measurements (grams, ml, Celsius) primarily.";
 
+  const personaLine = PERSONA_CONTEXT[persona] || PERSONA_CONTEXT.normal;
+
   let prompt = `You are ${companion_name}, a personal AI cooking companion for a home cook.
 
 ${PERSONALITY_TRAITS[personality] || PERSONALITY_TRAITS.friendly}
+
+${personaLine}
 
 ${unitLine}
 Display prices in ${currency} when discussing costs.

@@ -22,6 +22,7 @@ const ADMIN_URL = "https://nosh-admin-eight.vercel.app";
 
 export function CompanionChatOverlay() {
   const messages = useCompanionStore((s) => s.messages);
+  const companionName = useCompanionStore((s) => s.companionName);
   const setVoiceEnabled = useCompanionStore((s) => s.setVoiceEnabled);
   const { sendMessage, isLoading } = useCompanionChat();
   const [text, setText] = useState("");
@@ -87,7 +88,7 @@ export function CompanionChatOverlay() {
             <View style={{ marginBottom: 8 }}>
               <MessageCircle size={32} color={Colors.text.muted} strokeWidth={1.5} />
             </View>
-            <Text style={styles.emptyTitle}>Hey! I'm your Prep Mi companion</Text>
+            <Text style={styles.emptyTitle}>Hey! I'm {companionName}, your cooking companion</Text>
             <Text style={styles.emptyText}>
               Ask me what to cook tonight, help with substitutions, or tell me
               what's in your fridge.

@@ -1,20 +1,38 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useMemo } from "react";
 import { Platform } from "react-native";
 import { useCompanionStore } from "./companionStore";
 
-const WAKE_PHRASES = ["hey nosh", "hey nash", "a nosh", "hey naush", "hey noche"];
+/**
+ * Build wake phrases from the companion's name.
+ * Includes the exact "hey <name>" plus a few fuzzy variants
+ * to handle speech recognition misinterpretation.
+ */
+function buildWakePhrases(name: string): string[] {
+  const lower = name.toLowerCase().trim();
+  if (!lower) return ["hey buddy"];
+  return [
+    `hey ${lower}`,
+    `hi ${lower}`,
+    `yo ${lower}`,
+    `a ${lower}`,        // speech recognition often drops "hey"
+    `hay ${lower}`,      // common misrecognition of "hey"
+  ];
+}
 
 /**
  * Web-only background wake-word listener using Web Speech API.
- * Listens for "Hey NOSH" and calls callNosh() when detected.
+ * Listens for "Hey <companionName>" and calls callNosh() when detected.
  * Only active when on the feed screen. No-op on native.
  */
 export function useWakeWord() {
   const activeScreen = useCompanionStore((s) => s.activeScreen);
   const callNosh = useCompanionStore((s) => s.callNosh);
+  const companionName = useCompanionStore((s) => s.companionName);
   const recognitionRef = useRef<any>(null);
   const isActiveRef = useRef(false);
   const lastWakeRef = useRef(0);
+
+  const wakePhrases = useMemo(() => buildWakePhrases(companionName), [companionName]);
 
   const shouldListen = Platform.OS === "web" && activeScreen === "feed";
 
@@ -44,7 +62,7 @@ export function useWakeWord() {
     recognition.onresult = (event: any) => {
       for (let i = event.resultIndex; i < event.results.length; i++) {
         const transcript = event.results[i][0].transcript.toLowerCase().trim();
-        if (WAKE_PHRASES.some((phrase) => transcript.includes(phrase))) {
+        if (wakePhrases.some((phrase) => transcript.includes(phrase))) {
           // Debounce — don't fire more than once per 5 seconds
           const now = Date.now();
           if (now - lastWakeRef.current < 5000) return;
@@ -88,7 +106,7 @@ export function useWakeWord() {
       } catch {}
       recognitionRef.current = null;
     };
-  }, [shouldListen, callNosh]);
+  }, [shouldListen, callNosh, wakePhrases]);
 
   return { supported: Platform.OS === "web" };
 }

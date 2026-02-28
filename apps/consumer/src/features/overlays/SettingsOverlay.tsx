@@ -1,12 +1,12 @@
 import { useState, useEffect, useRef } from "react";
-import { View, Text, Pressable, ScrollView, Switch, StyleSheet, Linking, Alert, Animated, PanResponder } from "react-native";
+import { View, Text, Pressable, ScrollView, Switch, TextInput, StyleSheet, Linking, Alert, Animated, PanResponder } from "react-native";
 import { UserPen, Map, Dna, BookOpen, Wrench, Sparkles, ShoppingCart, LogOut } from "lucide-react-native";
 import { Colors, Glass, AVAILABLE_THEMES, useThemeStore } from "../../constants/colors";
 import { useAuth } from "../../contexts/AuthProvider";
 import { supabase } from "../../lib/supabase";
 import { lightTap, mediumTap } from "../../lib/haptics";
 import { useWorkflowStore } from "../../lib/stores/workflowStore";
-import { useCompanionStore } from "../../lib/companion/companionStore";
+import { useCompanionStore, type CompanionPersona } from "../../lib/companion/companionStore";
 import { useSettingsStore } from "../../lib/stores/settingsStore";
 import { useDevAccess } from "../../lib/devAccess";
 import { useSmartDefaults } from "../../hooks/useSmartDefaults";
@@ -130,8 +130,15 @@ export function SettingsOverlay({ onOpenOverlay, onClose }: { onOpenOverlay?: (k
   const { themeKey, setTheme } = useThemeStore();
   const workflowStore = useWorkflowStore();
   const callNosh = useCompanionStore((s) => s.callNosh);
+  const companionName = useCompanionStore((s) => s.companionName);
+  const setCompanionName = useCompanionStore((s) => s.setCompanionName);
+  const persona = useCompanionStore((s) => s.persona);
+  const setPersona = useCompanionStore((s) => s.setPersona);
+  const [nameInput, setNameInput] = useState(companionName);
   const homeNudges = useSettingsStore((s) => s.homeNudges);
   const setHomeNudges = useSettingsStore((s) => s.setHomeNudges);
+  const showWastage = useSettingsStore((s) => s.showWastage);
+  const setShowWastage = useSettingsStore((s) => s.setShowWastage);
   const devMode = useDevAccess((s) => s.enabled);
   const { defaults, isLoaded } = useSmartDefaults();
   const [isResetting, setIsResetting] = useState(false);
@@ -246,6 +253,92 @@ export function SettingsOverlay({ onOpenOverlay, onClose }: { onOpenOverlay?: (k
       {/* Companion */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Companion</Text>
+
+        {/* Name input */}
+        <View style={styles.settingRow}>
+          <Text style={styles.settingLabel}>Name</Text>
+          <TextInput
+            value={nameInput}
+            onChangeText={(t) => setNameInput(t.slice(0, 6))}
+            onBlur={() => {
+              const trimmed = nameInput.trim();
+              if (trimmed && trimmed !== companionName) {
+                lightTap();
+                setCompanionName(trimmed);
+                supabase
+                  .from("companion_profiles")
+                  .update({ companion_name: trimmed })
+                  .eq("user_id", user?.id ?? "")
+                  .then(({ error }) => {
+                    if (error) console.warn("companion name save:", error.message);
+                  });
+              }
+            }}
+            placeholder="Buddy"
+            maxLength={6}
+            placeholderTextColor={Colors.text.muted}
+            style={{
+              fontSize: 14,
+              color: Colors.text.primary,
+              backgroundColor: Glass.surface,
+              borderWidth: 1,
+              borderColor: Glass.borderLight,
+              borderRadius: 10,
+              paddingHorizontal: 12,
+              paddingVertical: 6,
+              minWidth: 80,
+              textAlign: "right",
+            }}
+          />
+        </View>
+
+        {/* Persona picker */}
+        <View style={{ paddingVertical: 12 }}>
+          <Text style={[styles.settingLabel, { marginBottom: 8 }]}>Skill Set</Text>
+          <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8 }}>
+            {([
+              { key: "normal" as CompanionPersona, label: "Chef" },
+              { key: "sommelier" as CompanionPersona, label: "Sommelier" },
+              { key: "mixologist" as CompanionPersona, label: "Mixologist" },
+              { key: "kick_back" as CompanionPersona, label: "Kick Back" },
+            ]).map((p) => {
+              const active = persona === p.key;
+              return (
+                <Pressable
+                  key={p.key}
+                  onPress={() => {
+                    lightTap();
+                    setPersona(p.key);
+                    supabase
+                      .from("companion_profiles")
+                      .update({ persona: p.key })
+                      .eq("user_id", user?.id ?? "")
+                      .then(({ error }) => {
+                        if (error) console.warn("persona save:", error.message);
+                      });
+                  }}
+                  style={{
+                    paddingHorizontal: 14,
+                    paddingVertical: 8,
+                    borderRadius: 20,
+                    borderWidth: 1.5,
+                    borderColor: active ? Colors.primary : Glass.borderLight,
+                    backgroundColor: active ? Colors.primary + "14" : Glass.surface,
+                  }}
+                >
+                  <Text style={{
+                    fontSize: 13,
+                    fontWeight: active ? "700" : "500",
+                    color: active ? Colors.primary : Colors.text.secondary,
+                  }}>
+                    {p.label}
+                  </Text>
+                </Pressable>
+              );
+            })}
+          </View>
+        </View>
+
         <SettingRow
           label="Presence level"
           value={profile?.companion_presence ?? "balanced"}
@@ -258,6 +351,15 @@ export function SettingsOverlay({ onOpenOverlay, onClose }: { onOpenOverlay?: (k
             onValueChange={(v) => { lightTap(); setHomeNudges(v); }}
             trackColor={{ false: Colors.divider, true: Colors.primary + "66" }}
             thumbColor={homeNudges ? Colors.primary : "#f4f3f4"}
+          />
+        </View>
+        <View style={styles.settingRow}>
+          <Text style={styles.settingLabel}>Show Wastage in Kitchen</Text>
+          <Switch
+            value={showWastage}
+            onValueChange={(v) => { lightTap(); setShowWastage(v); }}
+            trackColor={{ false: Colors.divider, true: Colors.primary + "66" }}
+            thumbColor={showWastage ? Colors.primary : "#f4f3f4"}
           />
         </View>
       </View>
@@ -277,7 +379,7 @@ export function SettingsOverlay({ onOpenOverlay, onClose }: { onOpenOverlay?: (k
         <Sparkles size={20} color={Colors.primary} strokeWidth={1.8} />
         <View style={{ flex: 1 }}>
           <Text style={{ fontSize: 16, fontWeight: "700", color: Colors.secondary }}>
-            Call Prep Mi
+            Call {companionName}
           </Text>
           <Text style={{ fontSize: 12, color: Colors.text.muted, marginTop: 2 }}>
             Go to companion

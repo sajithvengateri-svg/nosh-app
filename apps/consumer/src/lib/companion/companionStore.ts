@@ -44,6 +44,7 @@ interface CompanionState {
   // Bubble
   bubbleState: BubbleState;
   persona: CompanionPersona;
+  companionName: string;
   presence: CompanionPresence;
 
   // Inline input
@@ -78,6 +79,7 @@ interface CompanionState {
   callNosh: () => void;
   setBubbleState: (state: BubbleState) => void;
   setPersona: (persona: CompanionPersona) => void;
+  setCompanionName: (name: string) => void;
   setPresence: (presence: CompanionPresence) => void;
   setInputVisible: (v: boolean) => void;
   setInputText: (text: string) => void;
@@ -100,13 +102,14 @@ interface CompanionState {
 
 const MAX_RESPONSES = 5;
 
-export const useCompanionStore = create<CompanionState>((set) => ({
+export const useCompanionStore = create<CompanionState>((set, get) => ({
   activeScreen: "canvas",
   activePage: null,
   communicationMode: "idle",
   textNavVisible: false,
   bubbleState: "idle",
   persona: "normal",
+  companionName: "Buddy",
   presence: "subtle",
   inputVisible: false,
   inputText: "",
@@ -138,6 +141,7 @@ export const useCompanionStore = create<CompanionState>((set) => ({
   setJustWoke: (justWoke) => set({ justWoke }),
   callNosh: () => {
     Keyboard.dismiss();
+    const name = get().companionName;
     set((s) => ({
       activeScreen: "canvas",
       activePage: null,
@@ -146,7 +150,7 @@ export const useCompanionStore = create<CompanionState>((set) => ({
         {
           id: `wake-${Date.now()}`,
           type: "pill" as const,
-          content: "Hey! What can I help with?",
+          content: `Hey! ${name} here — what can I help with?`,
           icon: "sparkles",
           timestamp: Date.now(),
           dismissAfter: 8000,
@@ -157,6 +161,7 @@ export const useCompanionStore = create<CompanionState>((set) => ({
   },
   setBubbleState: (bubbleState) => set({ bubbleState }),
   setPersona: (persona) => set({ persona }),
+  setCompanionName: (companionName) => set({ companionName }),
   setPresence: (presence) => set({ presence }),
   setInputText: (inputText) => set({ inputText }),
   addMessage: (msg) =>
@@ -188,6 +193,7 @@ export const useCompanionStore = create<CompanionState>((set) => ({
       textNavVisible: false,
       bubbleState: "idle",
       persona: "normal",
+      companionName: "Buddy",
       inputVisible: false,
       inputText: "",
       messages: [],

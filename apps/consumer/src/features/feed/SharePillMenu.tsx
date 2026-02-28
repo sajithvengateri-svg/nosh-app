@@ -49,7 +49,7 @@ function buildShareMessage(
   time?: number,
   chef?: string,
 ): string {
-  let msg = `Check out this recipe on NOSH!\n\n`;
+  let msg = `Check out this recipe on Prep Mi!\n\n`;
   msg += `${title}\n`;
   if (time) msg += `${time} min`;
   if (cuisine) msg += ` · ${cuisine}`;

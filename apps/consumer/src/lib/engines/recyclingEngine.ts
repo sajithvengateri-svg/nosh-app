@@ -2,12 +2,23 @@
  * Recipe Recycling Engine
  *
  * Cooldown rules:
- * - Swiped left (dismissed): 14 days
+ * - Swiped left (dismissed): permanent (never resurface)
  * - Cooked, rated >= 4: 21 days
  * - Cooked, rated 3: 30 days
  * - Cooked, rated <= 2: 60 days
  * - Favourited: never auto-resurface (user explicitly saved)
+ *
+ * Mistake check:
+ * - If a dismissed recipe's cuisine matches user preferences,
+ *   log it as a "mismatch dismiss" for the companion to ask about later.
  */
+
+export interface MismatchDismiss {
+  recipeId: string;
+  recipeTitle: string;
+  cuisine: string;
+  dismissedAt: string; // ISO date
+}
 
 export interface RecipeCooldown {
   recipeId: string;
@@ -87,4 +98,43 @@ export function getRecycleBadge(
     return "Back by popular demand";
   }
   return "Try again?";
+}
+
+/**
+ * Check if a dismissed recipe is a "mismatch" — user likes this cuisine
+ * but swiped it away. Returns a MismatchDismiss if so, null otherwise.
+ */
+export function checkDismissMismatch(
+  recipeId: string,
+  recipeTitle: string,
+  recipeCuisine: string,
+  userCuisinePrefs: string[],
+  likedCuisines: string[],
+): MismatchDismiss | null {
+  if (!recipeCuisine) return null;
+  const lower = recipeCuisine.toLowerCase();
+  const allPreferred = [
+    ...userCuisinePrefs.map((c) => c.toLowerCase()),
+    ...likedCuisines.map((c) => c.toLowerCase()),
+  ];
+  if (allPreferred.includes(lower)) {
+    return {
+      recipeId,
+      recipeTitle,
+      cuisine: recipeCuisine,
+      dismissedAt: new Date().toISOString(),
+    };
+  }
+  return null;
+}
+
+/**
+ * Find mismatches that are old enough to ask about (14+ days).
+ */
+export function getMatureMismatches(
+  mismatches: MismatchDismiss[],
+  minAgeDays = 14,
+): MismatchDismiss[] {
+  const cutoff = Date.now() - minAgeDays * 24 * 60 * 60 * 1000;
+  return mismatches.filter((m) => new Date(m.dismissedAt).getTime() < cutoff);
 }

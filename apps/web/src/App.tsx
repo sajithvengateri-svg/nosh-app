@@ -389,6 +389,7 @@ const App = () => (
               <Route path="/join-shift/:token" element={<JoinShift />} />
               <Route path="/vendor-landing" element={<VendorLanding />} />
               <Route path="/nosh" element={<NoshConsumerLanding />} />
+              <Route path="/prepmi" element={<NoshConsumerLanding />} />
               <Route path="/nosh/vendors" element={<NoshVendorLanding />} />
               <Route path="/nosh/auth" element={<NoshAuth />} />
               <Route path="/nosh/admin" element={<NoshAdmin />} />
