@@ -73,7 +73,7 @@ export function CellarOverlay() {
         </Text>
         {!isLoading && (
           <Text style={styles.emptyNudge}>
-            Press NOSH and snap a pic of your wine labels.{"\n"}We'll catalogue
+            Press Prep Mi and snap a pic of your wine labels.{"\n"}We'll catalogue
             them for you.
           </Text>
         )}

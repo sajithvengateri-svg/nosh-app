@@ -73,7 +73,7 @@ export const NoshSocialCard = forwardRef<ViewShot, NoshSocialCardProps>(
 
           <View style={styles.branding}>
             <Text style={styles.brandText}>Made with</Text>
-            <Text style={styles.brandName}>NOSH</Text>
+            <Text style={styles.brandName}>Prep Mi</Text>
           </View>
         </View>
       </ViewShot>

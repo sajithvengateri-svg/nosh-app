@@ -104,7 +104,7 @@ export default function NoshDnaOverlay() {
         ? earned.map((a) => a.label).join(" · ")
         : "",
       "",
-      "Try Prep Mi -- nosh.app",
+      "Try Prep Mi -- prepmi.app",
     ].filter(Boolean);
     await Share.share({ message: lines.join("\n") });
   }, [label, confidencePct, totalCooks, cuisines.size, earned]);

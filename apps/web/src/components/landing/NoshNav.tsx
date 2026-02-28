@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
+import noshLogo from "@/assets/nosh-logo.png";
 
 interface NoshNavProps {
   activeTab: "foodies" | "vendors";
@@ -30,8 +31,11 @@ export function NoshNav({ activeTab }: NoshNavProps) {
     >
       <div className="max-w-6xl mx-auto flex items-center justify-between">
         {/* Logo */}
-        <Link to="/nosh" className="text-xl font-bold tracking-[4px]" style={{ color: "#D94878" }}>
-          Prep Mi
+        <Link to="/nosh" className="flex items-center gap-2">
+          <img src={noshLogo} alt="Prep Mi" className="w-8 h-8 rounded-lg" />
+          <span className="text-xl font-bold tracking-[4px]" style={{ color: "#D94878" }}>
+            Prep Mi
+          </span>
         </Link>
 
         {/* Toggle — desktop */}
@@ -61,14 +65,27 @@ export function NoshNav({ activeTab }: NoshNavProps) {
           </Link>
         </div>
 
-        {/* CTA — desktop */}
-        <Link
-          to={activeTab === "vendors" ? "/vendor/auth" : "/nosh/auth"}
-          className="hidden md:block px-4 py-2 rounded-full text-xs font-semibold transition-all hover:opacity-90"
-          style={{ background: "#D94878", color: "#fff" }}
-        >
-          Get Started
-        </Link>
+        {/* Right side — desktop */}
+        <div className="hidden md:flex items-center gap-3">
+          <Link
+            to={activeTab === "vendors" ? "/vendor/auth" : "/nosh/auth"}
+            className="px-4 py-2 rounded-full text-xs font-medium transition-all hover:bg-white/50"
+            style={{ color: "#7A6B75" }}
+          >
+            Login / Sign Up
+          </Link>
+          <a
+            href="#download"
+            onClick={(e) => {
+              e.preventDefault();
+              document.getElementById("download")?.scrollIntoView({ behavior: "smooth" });
+            }}
+            className="px-4 py-2 rounded-full text-xs font-semibold transition-all hover:opacity-90 text-white"
+            style={{ background: "#D94878" }}
+          >
+            Download App
+          </a>
+        </div>
 
         {/* Mobile hamburger */}
         <button
@@ -108,12 +125,24 @@ export function NoshNav({ activeTab }: NoshNavProps) {
           </Link>
           <Link
             to="/nosh/auth"
-            className="block mx-4 py-2.5 rounded-full text-sm font-semibold text-center text-white"
-            style={{ background: "#D94878" }}
+            className="block px-4 py-2 rounded-xl text-sm font-medium"
+            style={{ color: "#7A6B75" }}
             onClick={() => setMobileOpen(false)}
           >
-            Get Started
+            Login / Sign Up
           </Link>
+          <a
+            href="#download"
+            className="block mx-4 py-2.5 rounded-full text-sm font-semibold text-center text-white"
+            style={{ background: "#D94878" }}
+            onClick={(e) => {
+              e.preventDefault();
+              setMobileOpen(false);
+              document.getElementById("download")?.scrollIntoView({ behavior: "smooth" });
+            }}
+          >
+            Download App
+          </a>
         </motion.div>
       )}
     </motion.header>

@@ -450,7 +450,7 @@ function FeedView({ onOpenOverlay, onCardTap }: { onOpenOverlay: (key: string) =
                 letterSpacing: 1,
               }}
             >
-              NOSH
+              Prep Mi
             </Text>
             <Text
               style={{
@@ -520,7 +520,7 @@ function FeedView({ onOpenOverlay, onCardTap }: { onOpenOverlay: (key: string) =
           borderTopColor: Colors.border,
         }}
       >
-        <Text style={{ fontSize: 11, color: Colors.text.muted }}>NOSH v1.0.0</Text>
+        <Text style={{ fontSize: 11, color: Colors.text.muted }}>Prep Mi v1.0.0</Text>
         <Pressable onPress={() => Linking.openURL("https://nosh-admin-eight.vercel.app")}>
           <Wrench size={14} color={Colors.text.muted} strokeWidth={1.5} />
         </Pressable>

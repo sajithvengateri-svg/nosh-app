@@ -48,7 +48,7 @@ export function SocialShareScreen({
   const [isSaving, setIsSaving] = useState(false);
   const [format, setFormat] = useState<"square" | "story">("story");
 
-  const caption = `Just cooked ${recipeTitle}${chefName ? ` by ${chefName}` : ""} with NOSH!`;
+  const caption = `Just cooked ${recipeTitle}${chefName ? ` by ${chefName}` : ""} with Prep Mi!`;
 
   const captureCard = useCallback(async (): Promise<string | null> => {
     try {

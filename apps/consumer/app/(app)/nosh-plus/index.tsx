@@ -47,7 +47,7 @@ export default function NoshPlusPage() {
         <View style={styles.hero}>
           <View style={styles.noshPlusBadge}>
             <Zap size={20} color={Colors.primary} strokeWidth={2} fill={Colors.primary} />
-            <Text style={styles.noshPlusTitle}>NOSH+</Text>
+            <Text style={styles.noshPlusTitle}>Prep Mi+</Text>
           </View>
           <Text style={styles.tagline}>Your week, sorted</Text>
           <Text style={styles.heroDesc}>
@@ -73,7 +73,7 @@ export default function NoshPlusPage() {
           <View style={styles.activeSection}>
             <View style={styles.activeBadge}>
               <Zap size={16} color="#FFF" strokeWidth={2} fill="#FFF" />
-              <Text style={styles.activeText}>NOSH+ Active</Text>
+              <Text style={styles.activeText}>Prep Mi+ Active</Text>
             </View>
             <Pressable
               onPress={() => {

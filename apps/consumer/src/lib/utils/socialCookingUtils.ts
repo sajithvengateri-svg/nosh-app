@@ -28,12 +28,12 @@ export function buildShareMessage(event: SocialEvent): {
   switch (event.event_type) {
     case "sunday_roast":
       return {
-        message: `Sunday Roast: ${event.title}\n${dateStr}${event.location ? ` at ${event.location}` : ""}\n\nOpen NOSH to vote on dinner!`,
+        message: `Sunday Roast: ${event.title}\n${dateStr}${event.location ? ` at ${event.location}` : ""}\n\nOpen Prep Mi to vote on dinner!`,
         url: buildDeepLink(event.id),
       };
     case "party":
       return {
-        message: `Party: ${event.title}\n${dateStr}${event.location ? ` at ${event.location}` : ""}\n\nOpen NOSH to see the menu and your role!`,
+        message: `Party: ${event.title}\n${dateStr}${event.location ? ` at ${event.location}` : ""}\n\nOpen Prep Mi to see the menu and your role!`,
         url: buildDeepLink(event.id),
       };
     case "dutch_nosh":
@@ -49,7 +49,7 @@ export function buildDeepLink(eventId: string): string {
 }
 
 export function buildPublicUrl(eventId: string): string {
-  return `https://nosh.app/potluck/${eventId}`;
+  return `https://prepmi.app/potluck/${eventId}`;
 }
 
 // ── Vote Tallying ─────────────────────────────────────────────────

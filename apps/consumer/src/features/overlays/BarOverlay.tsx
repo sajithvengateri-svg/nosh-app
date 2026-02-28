@@ -74,7 +74,7 @@ export function BarOverlay() {
         </Text>
         {!isLoading && (
           <Text style={styles.emptyNudge}>
-            Press NOSH and snap a pic of your spirits.{"\n"}We'll do the rest.
+            Press Prep Mi and snap a pic of your spirits.{"\n"}We'll do the rest.
           </Text>
         )}
       </ScrollView>

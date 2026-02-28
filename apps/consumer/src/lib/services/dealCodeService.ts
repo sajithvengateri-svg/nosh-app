@@ -39,7 +39,7 @@ export function formatCodeForDisplay(code: string): string {
 
 /** Build the QR deep link payload. */
 export function buildQRPayload(code: string): string {
-  return `https://nosh.app/r/${code}`;
+  return `https://prepmi.app/r/${code}`;
 }
 
 /** Get expiry timestamp (24h from now). */

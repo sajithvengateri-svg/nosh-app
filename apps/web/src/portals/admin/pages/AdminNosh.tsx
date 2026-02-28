@@ -13,7 +13,7 @@ import {
 
 const NOSH_SECTIONS = [
   { label: "Meal Plans", icon: UtensilsCrossed, description: "Weekly autopilot, recipe scheduling" },
-  { label: "Subscribers", icon: Users, description: "Nosh+ premium members, churn tracking" },
+  { label: "Subscribers", icon: Users, description: "Prep Mi+ premium members, churn tracking" },
   { label: "Smart Defaults", icon: Sparkles, description: "One-tap cook, ingredient intelligence" },
   { label: "Leftovers", icon: ShoppingCart, description: "Leftover portions, savings tracking" },
   { label: "Analytics", icon: BarChart3, description: "Usage, retention, conversion funnels" },

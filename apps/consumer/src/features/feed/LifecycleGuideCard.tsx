@@ -20,7 +20,7 @@ export function LifecycleGuideCard({ onOpenOverlay }: LifecycleGuideCardProps) {
         <BookOpen size={28} color={Colors.primary} strokeWidth={1.5} />
       </View>
 
-      <Text style={styles.title}>Learn how NOSH works</Text>
+      <Text style={styles.title}>Learn how Prep Mi works</Text>
       <Text style={styles.subtitle}>
         A quick 8-step guide through the recipe lifecycle — from feed to plate.
       </Text>

@@ -92,7 +92,7 @@ export function SharePillMenu({
     }
   }, [visible]);
 
-  const shareUrl = `https://nosh.app/recipe/${recipeId}`;
+  const shareUrl = `https://prepmi.app/recipe/${recipeId}`;
   const shareMessage = buildShareMessage(recipeTitle, cuisine, totalTime, chefName);
 
   const executeShare = useCallback(

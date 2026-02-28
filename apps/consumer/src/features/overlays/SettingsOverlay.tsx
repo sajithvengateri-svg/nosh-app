@@ -186,7 +186,7 @@ export function SettingsOverlay({ onOpenOverlay, onClose }: { onOpenOverlay?: (k
         </View>
       </View>
 
-      {/* Call NOSH */}
+      {/* Call Prep Mi */}
       <Pressable
         onPress={() => {
           lightTap();
@@ -201,7 +201,7 @@ export function SettingsOverlay({ onOpenOverlay, onClose }: { onOpenOverlay?: (k
         <Sparkles size={20} color={Colors.primary} strokeWidth={1.8} />
         <View style={{ flex: 1 }}>
           <Text style={{ fontSize: 16, fontWeight: "700", color: Colors.secondary }}>
-            Call NOSH
+            Call Prep Mi
           </Text>
           <Text style={{ fontSize: 12, color: Colors.text.muted, marginTop: 2 }}>
             Go to companion
@@ -270,7 +270,7 @@ export function SettingsOverlay({ onOpenOverlay, onClose }: { onOpenOverlay?: (k
         </>
       )}
 
-      <Text style={styles.version}>NOSH v1.0.0</Text>
+      <Text style={styles.version}>Prep Mi v1.0.0</Text>
     </ScrollView>
   );
 }
