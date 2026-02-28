@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
-import { View, Text, Pressable, ScrollView, Switch, StyleSheet, Linking, Alert } from "react-native";
-import { UserPen, Map, Dna, BookOpen, Wrench, Sparkles, ShoppingCart } from "lucide-react-native";
+import { useState, useEffect, useRef, useCallback } from "react";
+import { View, Text, Pressable, ScrollView, Switch, StyleSheet, Linking, Alert, Animated, PanResponder, Dimensions, LayoutChangeEvent } from "react-native";
+import { UserPen, Map, Dna, BookOpen, Wrench, Sparkles, ShoppingCart, LogOut, ChevronRight } from "lucide-react-native";
 import { Colors, Glass, AVAILABLE_THEMES, useThemeStore } from "../../constants/colors";
 import { useAuth } from "../../contexts/AuthProvider";
 import { supabase } from "../../lib/supabase";
@@ -24,6 +24,155 @@ function SettingRow({ label, value, onPress }: SettingRowProps) {
       <Text style={styles.settingLabel}>{label}</Text>
       {value && <Text style={styles.settingValue}>{value}</Text>}
     </Pressable>
+  );
+}
+
+/* ── Slide-to-logout (airline fuel switch) ─────────────────── */
+const THUMB_SIZE = 48;
+const TRACK_H = 56;
+
+function SlideToLogout({ onConfirm }: { onConfirm: () => void }) {
+  const translateX = useRef(new Animated.Value(0)).current;
+  const [trackWidth, setTrackWidth] = useState(0);
+  const maxSlide = trackWidth - THUMB_SIZE - 8; // 8 = padding
+  const confirmed = useRef(false);
+
+  const pulseAnim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    const loop = Animated.loop(
+      Animated.sequence([
+        Animated.timing(pulseAnim, { toValue: 1, duration: 1500, useNativeDriver: true }),
+        Animated.timing(pulseAnim, { toValue: 0, duration: 1500, useNativeDriver: true }),
+      ])
+    );
+    loop.start();
+    return () => loop.stop();
+  }, [pulseAnim]);
+
+  const panResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onMoveShouldSetPanResponder: () => true,
+      onPanResponderGrant: () => {
+        confirmed.current = false;
+        lightTap();
+      },
+      onPanResponderMove: (_, gesture) => {
+        const x = Math.max(0, Math.min(gesture.dx, maxSlide));
+        translateX.setValue(x);
+      },
+      onPanResponderRelease: (_, gesture) => {
+        const x = Math.max(0, Math.min(gesture.dx, maxSlide));
+        if (x > maxSlide * 0.85 && !confirmed.current) {
+          confirmed.current = true;
+          Animated.spring(translateX, {
+            toValue: maxSlide,
+            useNativeDriver: true,
+          }).start(() => onConfirm());
+        } else {
+          Animated.spring(translateX, {
+            toValue: 0,
+            friction: 5,
+            useNativeDriver: true,
+          }).start();
+        }
+      },
+    })
+  ).current;
+
+  // Recreate responder when maxSlide changes
+  const responder = useRef(panResponder);
+  useEffect(() => {
+    if (maxSlide <= 0) return;
+    responder.current = PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onMoveShouldSetPanResponder: () => true,
+      onPanResponderGrant: () => {
+        confirmed.current = false;
+        lightTap();
+      },
+      onPanResponderMove: (_, gesture) => {
+        const x = Math.max(0, Math.min(gesture.dx, maxSlide));
+        translateX.setValue(x);
+      },
+      onPanResponderRelease: (_, gesture) => {
+        const x = Math.max(0, Math.min(gesture.dx, maxSlide));
+        if (x > maxSlide * 0.85 && !confirmed.current) {
+          confirmed.current = true;
+          Animated.spring(translateX, {
+            toValue: maxSlide,
+            useNativeDriver: true,
+          }).start(() => onConfirm());
+        } else {
+          Animated.spring(translateX, {
+            toValue: 0,
+            friction: 5,
+            useNativeDriver: true,
+          }).start();
+        }
+      },
+    });
+  }, [maxSlide, translateX, onConfirm]);
+
+  const onLayout = useCallback((e: LayoutChangeEvent) => {
+    setTrackWidth(e.nativeEvent.layout.width);
+  }, []);
+
+  const chevronOpacity = pulseAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0.3, 0.7],
+  });
+
+  return (
+    <View
+      onLayout={onLayout}
+      style={{
+        height: TRACK_H,
+        borderRadius: TRACK_H / 2,
+        backgroundColor: "rgba(229, 57, 53, 0.06)",
+        borderWidth: 1,
+        borderColor: "rgba(229, 57, 53, 0.15)",
+        justifyContent: "center",
+        padding: 4,
+        marginTop: 8,
+        overflow: "hidden",
+      }}
+    >
+      {/* Label */}
+      <View style={{ position: "absolute", left: 0, right: 0, alignItems: "center", flexDirection: "row", justifyContent: "center", gap: 4 }}>
+        <Animated.View style={{ opacity: chevronOpacity }}>
+          <ChevronRight size={14} color="#E53935" strokeWidth={2} />
+        </Animated.View>
+        <Text style={{ fontSize: 13, fontWeight: "600", color: "rgba(229, 57, 53, 0.5)", letterSpacing: 1 }}>
+          Slide to sign out
+        </Text>
+        <Animated.View style={{ opacity: chevronOpacity }}>
+          <ChevronRight size={14} color="#E53935" strokeWidth={2} />
+        </Animated.View>
+      </View>
+
+      {/* Thumb */}
+      <Animated.View
+        {...(responder.current?.panHandlers ?? {})}
+        style={{
+          width: THUMB_SIZE,
+          height: THUMB_SIZE,
+          borderRadius: THUMB_SIZE / 2,
+          backgroundColor: "#E53935",
+          alignItems: "center",
+          justifyContent: "center",
+          transform: [{ translateX }],
+          shadowColor: "#E53935",
+          shadowOffset: { width: 0, height: 2 },
+          shadowRadius: 8,
+          shadowOpacity: 0.3,
+          elevation: 4,
+        }}
+      >
+        <LogOut size={20} color="#FFF" strokeWidth={2} />
+      </Animated.View>
+    </View>
   );
 }
 
@@ -239,16 +388,8 @@ export function SettingsOverlay({ onOpenOverlay, onClose }: { onOpenOverlay?: (k
         })}
       </View>
 
-      {/* Sign out */}
-      <Pressable
-        onPress={() => {
-          lightTap();
-          signOut();
-        }}
-        style={styles.signOutButton}
-      >
-        <Text style={styles.signOutText}>Sign Out</Text>
-      </Pressable>
+      {/* Sign out — slide to confirm */}
+      <SlideToLogout onConfirm={() => { mediumTap(); signOut(); }} />
 
       {/* Admin Panel - dev mode only */}
       {devMode && (
