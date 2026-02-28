@@ -74,8 +74,6 @@
   .link-app:hover { background: #6366F130; }
   .link-mobile { background: #10B98118; color: #34D399; border: 1px solid #10B98125; }
   .link-mobile:hover { background: #10B98130; }
-  .link-city { background: #F59E0B10; color: #D97706; border: 1px solid #F59E0B15; font-size: 10px; }
-  .link-city:hover { background: #F59E0B25; }
 
   .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
   .stream-chefos { background: #6366F1; }
@@ -84,8 +82,6 @@
   .stream-vendor { background: #8B5CF6; }
   .stream-moneyos { background: #10B981; }
   .stream-consumer { background: #D94878; }
-
-  .cities-row { display: flex; gap: 4px; flex-wrap: wrap; padding: 6px 0 2px 16px; }
 
   .legend { display: flex; gap: 14px; justify-content: center; margin-bottom: 20px; flex-wrap: wrap; }
   .legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: #94A3B8; }
@@ -107,22 +103,22 @@
     <h1><span>Queitos</span> App Portfolio</h1>
     <div class="toggles">
       <button class="toggle-btn active" data-region="au" onclick="toggleRegion(this)">
-        <span class="check"></span><span class="flag">🇦🇺</span> Australia
+        <span class="check"></span><span class="flag">&#x1F1E6;&#x1F1FA;</span> Australia
       </button>
       <button class="toggle-btn active" data-region="in" onclick="toggleRegion(this)">
-        <span class="check"></span><span class="flag">🇮🇳</span> India
+        <span class="check"></span><span class="flag">&#x1F1EE;&#x1F1F3;</span> India
       </button>
       <button class="toggle-btn active" data-region="uae" onclick="toggleRegion(this)">
-        <span class="check"></span><span class="flag">🇦🇪</span> UAE
+        <span class="check"></span><span class="flag">&#x1F1E6;&#x1F1EA;</span> UAE
       </button>
       <button class="toggle-btn active" data-region="uk" onclick="toggleRegion(this)">
-        <span class="check"></span><span class="flag">🇬🇧</span> UK
+        <span class="check"></span><span class="flag">&#x1F1EC;&#x1F1E7;</span> UK
       </button>
       <button class="toggle-btn active" data-region="sg" onclick="toggleRegion(this)">
-        <span class="check"></span><span class="flag">🇸🇬</span> Singapore
+        <span class="check"></span><span class="flag">&#x1F1F8;&#x1F1EC;</span> Singapore
       </button>
       <button class="toggle-btn active" data-region="us" onclick="toggleRegion(this)">
-        <span class="check"></span><span class="flag">🇺🇸</span> US
+        <span class="check"></span><span class="flag">&#x1F1FA;&#x1F1F8;</span> US
       </button>
       <button class="toggle-btn active" data-region="standalone" onclick="toggleRegion(this)">
         <span class="check"></span> Standalone
@@ -165,9 +161,9 @@
     <!-- AUSTRALIA -->
     <div class="section" data-region="au">
       <div class="section-header">
-        <h2>🇦🇺 Australia</h2>
+        <h2>&#x1F1E6;&#x1F1FA; Australia</h2>
         <span class="badge badge-au">AU</span>
-        <span style="margin-left:auto; font-size:11px; color:#64748B;">3 apps + 7 cities</span>
+        <span style="margin-left:auto; font-size:11px; color:#64748B;">3 apps</span>
       </div>
 
       <div class="app-row">
@@ -175,8 +171,7 @@
         <div class="app-desc">Full kitchen operating system for commercial kitchens</div>
         <div class="app-links">
           <a class="link link-landing" href="https://chefos.ai" target="_blank">Landing</a>
-          <a class="link link-app" href="https://chefos.ai/dashboard" target="_blank">Web App</a>
-          <a class="link link-mobile" href="#">Mobile</a>
+          <a class="link link-app" href="https://chefos.ai/auth" target="_blank">Web App</a>
         </div>
       </div>
 
@@ -184,9 +179,8 @@
         <div class="app-top"><div class="dot stream-homechef"></div><div class="app-name">HomeChef</div></div>
         <div class="app-desc">Kitchen companion for home cooks</div>
         <div class="app-links">
-          <a class="link link-landing" href="https://homechef.chefos.ai" target="_blank">Landing</a>
-          <a class="link link-app" href="https://homechef.chefos.ai/dashboard" target="_blank">Web App</a>
-          <a class="link link-mobile" href="#">Mobile</a>
+          <a class="link link-landing" href="https://chefos.ai/home-cook" target="_blank">Landing</a>
+          <a class="link link-app" href="https://chefos.ai/auth?mode=home_cook&tab=login" target="_blank">Web App</a>
         </div>
       </div>
 
@@ -194,27 +188,16 @@
         <div class="app-top"><div class="dot stream-eatsafe"></div><div class="app-name">EatSafe</div></div>
         <div class="app-desc">Food safety compliance for Australian councils</div>
         <div class="app-links">
-          <a class="link link-landing" href="https://brisbane.chefos.ai" target="_blank">Landing</a>
-          <a class="link link-app" href="https://brisbane.chefos.ai/dashboard" target="_blank">Web App</a>
-          <a class="link link-mobile" href="#">Mobile</a>
+          <a class="link link-landing" href="https://chefos.ai/food-safety-landing" target="_blank">Landing</a>
+          <a class="link link-app" href="https://chefos.ai/auth?tab=signup&source=food_safety" target="_blank">Web App</a>
         </div>
-      </div>
-      <div class="cities-row">
-        <a class="link link-city" href="https://brisbane.chefos.ai" target="_blank">Brisbane</a>
-        <a class="link link-city" href="https://sydney.chefos.ai" target="_blank">Sydney</a>
-        <a class="link link-city" href="https://melbourne.chefos.ai" target="_blank">Melbourne</a>
-        <a class="link link-city" href="https://perth.chefos.ai" target="_blank">Perth</a>
-        <a class="link link-city" href="https://adelaide.chefos.ai" target="_blank">Adelaide</a>
-        <a class="link link-city" href="https://hobart.chefos.ai" target="_blank">Hobart</a>
-        <a class="link link-city" href="https://canberra.chefos.ai" target="_blank">Canberra</a>
-        <a class="link link-city" href="https://darwin.chefos.ai" target="_blank">Darwin</a>
       </div>
     </div>
 
     <!-- INDIA -->
     <div class="section" data-region="in">
       <div class="section-header">
-        <h2>🇮🇳 India</h2>
+        <h2>&#x1F1EE;&#x1F1F3; India</h2>
         <span class="badge badge-in">IN</span>
         <span style="margin-left:auto; font-size:11px; color:#64748B;">3 apps</span>
       </div>
@@ -223,9 +206,8 @@
         <div class="app-top"><div class="dot stream-chefos"></div><div class="app-name">ChefOS India</div></div>
         <div class="app-desc">Kitchen management localized for India</div>
         <div class="app-links">
-          <a class="link link-landing" href="https://chefos-in.chefos.ai" target="_blank">Landing</a>
-          <a class="link link-app" href="https://chefos-in.chefos.ai/dashboard" target="_blank">Web App</a>
-          <a class="link link-mobile" href="#">Mobile</a>
+          <a class="link link-landing" href="https://chefos.ai/chefos-india" target="_blank">Landing</a>
+          <a class="link link-app" href="https://chefos.ai/auth" target="_blank">Web App</a>
         </div>
       </div>
 
@@ -233,9 +215,8 @@
         <div class="app-top"><div class="dot stream-homechef"></div><div class="app-name">HomeChef India</div></div>
         <div class="app-desc">Home cooking companion for Indian kitchens</div>
         <div class="app-links">
-          <a class="link link-landing" href="https://homechef-in.chefos.ai" target="_blank">Landing</a>
-          <a class="link link-app" href="https://homechef-in.chefos.ai/dashboard" target="_blank">Web App</a>
-          <a class="link link-mobile" href="#">Mobile</a>
+          <a class="link link-landing" href="https://chefos.ai/home-cook-india" target="_blank">Landing</a>
+          <a class="link link-app" href="https://chefos.ai/auth?mode=home_cook&tab=login" target="_blank">Web App</a>
         </div>
       </div>
 
@@ -243,9 +224,8 @@
         <div class="app-top"><div class="dot stream-eatsafe"></div><div class="app-name">EatSafe India (FSSAI)</div></div>
         <div class="app-desc">FSSAI compliance and food safety audits</div>
         <div class="app-links">
-          <a class="link link-landing" href="https://india.chefos.ai" target="_blank">Landing</a>
-          <a class="link link-app" href="https://india.chefos.ai/dashboard" target="_blank">Web App</a>
-          <a class="link link-mobile" href="#">Mobile</a>
+          <a class="link link-landing" href="https://chefos.ai/food-safety-india" target="_blank">Landing</a>
+          <a class="link link-app" href="https://chefos.ai/auth?tab=signup&source=food_safety" target="_blank">Web App</a>
         </div>
       </div>
     </div>
@@ -253,7 +233,7 @@
     <!-- UAE -->
     <div class="section" data-region="uae">
       <div class="section-header">
-        <h2>🇦🇪 UAE / GCC</h2>
+        <h2>&#x1F1E6;&#x1F1EA; UAE / GCC</h2>
         <span class="badge badge-uae">UAE</span>
         <span style="margin-left:auto; font-size:11px; color:#64748B;">3 apps</span>
       </div>
@@ -262,9 +242,8 @@
         <div class="app-top"><div class="dot stream-chefos"></div><div class="app-name">ChefOS UAE</div></div>
         <div class="app-desc">Kitchen OS for UAE & GCC region</div>
         <div class="app-links">
-          <a class="link link-landing" href="https://chefos-uae.chefos.ai" target="_blank">Landing</a>
-          <a class="link link-app" href="https://chefos-uae.chefos.ai/dashboard" target="_blank">Web App</a>
-          <a class="link link-mobile" href="#">Mobile</a>
+          <a class="link link-landing" href="https://chefos.ai/chefos-gcc" target="_blank">Landing</a>
+          <a class="link link-app" href="https://chefos.ai/auth" target="_blank">Web App</a>
         </div>
       </div>
 
@@ -272,9 +251,8 @@
         <div class="app-top"><div class="dot stream-homechef"></div><div class="app-name">HomeChef UAE</div></div>
         <div class="app-desc">Home cooking companion for UAE</div>
         <div class="app-links">
-          <a class="link link-landing" href="https://homechef-uae.chefos.ai" target="_blank">Landing</a>
-          <a class="link link-app" href="https://homechef-uae.chefos.ai/dashboard" target="_blank">Web App</a>
-          <a class="link link-mobile" href="#">Mobile</a>
+          <a class="link link-landing" href="https://chefos.ai/home-cook-gcc" target="_blank">Landing</a>
+          <a class="link link-app" href="https://chefos.ai/auth?mode=home_cook&tab=login" target="_blank">Web App</a>
         </div>
       </div>
 
@@ -282,9 +260,8 @@
         <div class="app-top"><div class="dot stream-eatsafe"></div><div class="app-name">EatSafe UAE</div></div>
         <div class="app-desc">Dubai Municipality food safety compliance</div>
         <div class="app-links">
-          <a class="link link-landing" href="https://dubai.chefos.ai" target="_blank">Landing</a>
-          <a class="link link-app" href="https://dubai.chefos.ai/dashboard" target="_blank">Web App</a>
-          <a class="link link-mobile" href="#">Mobile</a>
+          <a class="link link-landing" href="https://chefos.ai/food-safety-gcc" target="_blank">Landing</a>
+          <a class="link link-app" href="https://chefos.ai/auth?tab=signup&source=food_safety" target="_blank">Web App</a>
         </div>
       </div>
     </div>
@@ -292,7 +269,7 @@
     <!-- UK -->
     <div class="section" data-region="uk">
       <div class="section-header">
-        <h2>🇬🇧 United Kingdom</h2>
+        <h2>&#x1F1EC;&#x1F1E7; United Kingdom</h2>
         <span class="badge badge-uk">UK</span>
         <span style="margin-left:auto; font-size:11px; color:#64748B;">3 apps</span>
       </div>
@@ -301,9 +278,8 @@
         <div class="app-top"><div class="dot stream-chefos"></div><div class="app-name">ChefOS UK</div></div>
         <div class="app-desc">Kitchen management for UK hospitality</div>
         <div class="app-links">
-          <a class="link link-landing" href="https://chefos-uk.chefos.ai" target="_blank">Landing</a>
-          <a class="link link-app" href="https://chefos-uk.chefos.ai/dashboard" target="_blank">Web App</a>
-          <a class="link link-mobile" href="#">Mobile</a>
+          <a class="link link-landing" href="https://chefos.ai" target="_blank">Landing</a>
+          <a class="link link-app" href="https://chefos.ai/auth" target="_blank">Web App</a>
         </div>
       </div>
 
@@ -311,9 +287,8 @@
         <div class="app-top"><div class="dot stream-homechef"></div><div class="app-name">HomeChef UK</div></div>
         <div class="app-desc">Home cooking companion for the UK</div>
         <div class="app-links">
-          <a class="link link-landing" href="https://homechef-uk.chefos.ai" target="_blank">Landing</a>
-          <a class="link link-app" href="https://homechef-uk.chefos.ai/dashboard" target="_blank">Web App</a>
-          <a class="link link-mobile" href="#">Mobile</a>
+          <a class="link link-landing" href="https://chefos.ai/home-cook" target="_blank">Landing</a>
+          <a class="link link-app" href="https://chefos.ai/auth?mode=home_cook&tab=login" target="_blank">Web App</a>
         </div>
       </div>
 
@@ -321,9 +296,8 @@
         <div class="app-top"><div class="dot stream-eatsafe"></div><div class="app-name">EatSafe London</div></div>
         <div class="app-desc">UK food hygiene rating compliance</div>
         <div class="app-links">
-          <a class="link link-landing" href="https://london.chefos.ai" target="_blank">Landing</a>
-          <a class="link link-app" href="https://london.chefos.ai/dashboard" target="_blank">Web App</a>
-          <a class="link link-mobile" href="#">Mobile</a>
+          <a class="link link-landing" href="https://chefos.ai/food-safety-landing" target="_blank">Landing</a>
+          <a class="link link-app" href="https://chefos.ai/auth?tab=signup&source=food_safety" target="_blank">Web App</a>
         </div>
       </div>
     </div>
@@ -331,7 +305,7 @@
     <!-- SINGAPORE -->
     <div class="section" data-region="sg">
       <div class="section-header">
-        <h2>🇸🇬 Singapore</h2>
+        <h2>&#x1F1F8;&#x1F1EC; Singapore</h2>
         <span class="badge badge-sg">SG</span>
         <span style="margin-left:auto; font-size:11px; color:#64748B;">3 apps</span>
       </div>
@@ -340,9 +314,8 @@
         <div class="app-top"><div class="dot stream-chefos"></div><div class="app-name">ChefOS SG</div></div>
         <div class="app-desc">Kitchen management for Singapore F&B</div>
         <div class="app-links">
-          <a class="link link-landing" href="https://chefos-sg.chefos.ai" target="_blank">Landing</a>
-          <a class="link link-app" href="https://chefos-sg.chefos.ai/dashboard" target="_blank">Web App</a>
-          <a class="link link-mobile" href="#">Mobile</a>
+          <a class="link link-landing" href="https://chefos.ai" target="_blank">Landing</a>
+          <a class="link link-app" href="https://chefos.ai/auth" target="_blank">Web App</a>
         </div>
       </div>
 
@@ -350,9 +323,8 @@
         <div class="app-top"><div class="dot stream-homechef"></div><div class="app-name">HomeChef SG</div></div>
         <div class="app-desc">Home cooking companion for Singapore</div>
         <div class="app-links">
-          <a class="link link-landing" href="https://homechef-sg.chefos.ai" target="_blank">Landing</a>
-          <a class="link link-app" href="https://homechef-sg.chefos.ai/dashboard" target="_blank">Web App</a>
-          <a class="link link-mobile" href="#">Mobile</a>
+          <a class="link link-landing" href="https://chefos.ai/home-cook" target="_blank">Landing</a>
+          <a class="link link-app" href="https://chefos.ai/auth?mode=home_cook&tab=login" target="_blank">Web App</a>
         </div>
       </div>
 
@@ -360,9 +332,8 @@
         <div class="app-top"><div class="dot stream-eatsafe"></div><div class="app-name">EatSafe SG</div></div>
         <div class="app-desc">SFA food safety compliance</div>
         <div class="app-links">
-          <a class="link link-landing" href="https://sg.chefos.ai" target="_blank">Landing</a>
-          <a class="link link-app" href="https://sg.chefos.ai/dashboard" target="_blank">Web App</a>
-          <a class="link link-mobile" href="#">Mobile</a>
+          <a class="link link-landing" href="https://chefos.ai/food-safety-landing" target="_blank">Landing</a>
+          <a class="link link-app" href="https://chefos.ai/auth?tab=signup&source=food_safety" target="_blank">Web App</a>
         </div>
       </div>
     </div>
@@ -370,7 +341,7 @@
     <!-- US -->
     <div class="section" data-region="us">
       <div class="section-header">
-        <h2>🇺🇸 United States</h2>
+        <h2>&#x1F1FA;&#x1F1F8; United States</h2>
         <span class="badge badge-us">US</span>
         <span style="margin-left:auto; font-size:11px; color:#64748B;">3 apps</span>
       </div>
@@ -379,9 +350,8 @@
         <div class="app-top"><div class="dot stream-chefos"></div><div class="app-name">ChefOS US</div></div>
         <div class="app-desc">Kitchen management for US restaurants</div>
         <div class="app-links">
-          <a class="link link-landing" href="https://chefos-us.chefos.ai" target="_blank">Landing</a>
-          <a class="link link-app" href="https://chefos-us.chefos.ai/dashboard" target="_blank">Web App</a>
-          <a class="link link-mobile" href="#">Mobile</a>
+          <a class="link link-landing" href="https://chefos.ai" target="_blank">Landing</a>
+          <a class="link link-app" href="https://chefos.ai/auth" target="_blank">Web App</a>
         </div>
       </div>
 
@@ -389,9 +359,8 @@
         <div class="app-top"><div class="dot stream-homechef"></div><div class="app-name">HomeChef US</div></div>
         <div class="app-desc">Home cooking companion for the US</div>
         <div class="app-links">
-          <a class="link link-landing" href="https://homechef-us.chefos.ai" target="_blank">Landing</a>
-          <a class="link link-app" href="https://homechef-us.chefos.ai/dashboard" target="_blank">Web App</a>
-          <a class="link link-mobile" href="#">Mobile</a>
+          <a class="link link-landing" href="https://chefos.ai/home-cook" target="_blank">Landing</a>
+          <a class="link link-app" href="https://chefos.ai/auth?mode=home_cook&tab=login" target="_blank">Web App</a>
         </div>
       </div>
 
@@ -399,9 +368,8 @@
         <div class="app-top"><div class="dot stream-eatsafe"></div><div class="app-name">EatSafe New York</div></div>
         <div class="app-desc">NYC Health Department compliance</div>
         <div class="app-links">
-          <a class="link link-landing" href="https://ny.chefos.ai" target="_blank">Landing</a>
-          <a class="link link-app" href="https://ny.chefos.ai/dashboard" target="_blank">Web App</a>
-          <a class="link link-mobile" href="#">Mobile</a>
+          <a class="link link-landing" href="https://chefos.ai/food-safety-landing" target="_blank">Landing</a>
+          <a class="link link-app" href="https://chefos.ai/auth?tab=signup&source=food_safety" target="_blank">Web App</a>
         </div>
       </div>
     </div>
@@ -418,9 +386,8 @@
         <div class="app-top"><div class="dot stream-moneyos"></div><div class="app-name">MoneyOS</div></div>
         <div class="app-desc">Financial operating system for restaurants — P&L, cash flow, alerts</div>
         <div class="app-links">
-          <a class="link link-landing" href="https://moneyos.chefos.ai" target="_blank">Landing</a>
-          <a class="link link-app" href="https://moneyos.chefos.ai/dashboard" target="_blank">Web App</a>
-          <a class="link link-mobile" href="#">Mobile</a>
+          <a class="link link-landing" href="https://chefos.ai/money-landing" target="_blank">Landing</a>
+          <a class="link link-app" href="https://chefos.ai/auth" target="_blank">Web App</a>
         </div>
       </div>
 
@@ -428,9 +395,8 @@
         <div class="app-top"><div class="dot stream-vendor"></div><div class="app-name">VendorOS</div></div>
         <div class="app-desc">Supply chain management for food vendors and suppliers</div>
         <div class="app-links">
-          <a class="link link-landing" href="https://vendor.chefos.ai" target="_blank">Landing</a>
-          <a class="link link-app" href="https://vendor.chefos.ai/vendor/dashboard" target="_blank">Web App</a>
-          <a class="link link-mobile" href="#">Mobile</a>
+          <a class="link link-landing" href="https://chefos.ai/vendor-landing" target="_blank">Landing</a>
+          <a class="link link-app" href="https://chefos.ai/vendor/auth" target="_blank">Web App</a>
         </div>
       </div>
     </div>
@@ -448,8 +414,8 @@
         <div class="app-desc">Consumer food marketplace — discover, order, and connect with local chefs</div>
         <div class="app-links">
           <a class="link link-landing" href="https://chefos.ai/nosh" target="_blank">Landing</a>
-          <a class="link link-app" href="https://chefos.ai/nosh/vendors" target="_blank">Web App</a>
-          <a class="link link-mobile" href="#">Mobile</a>
+          <a class="link link-app" href="https://chefos.ai/nosh/vendors" target="_blank">Vendors</a>
+          <a class="link link-app" href="https://chefos.ai/nosh/admin" target="_blank">Admin</a>
         </div>
       </div>
     </div>
