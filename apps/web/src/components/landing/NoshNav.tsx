@@ -52,7 +52,7 @@ export function NoshNav({ activeTab }: NoshNavProps) {
 
         {/* CTA */}
         <Link
-          to={activeTab === "vendors" ? "/vendor/auth" : "/auth"}
+          to={activeTab === "vendors" ? "/vendor/auth" : "/nosh/auth"}
           className="px-4 py-2 rounded-full text-xs font-semibold transition-all hover:opacity-90"
           style={{ background: "#D94878", color: "#fff" }}
         >

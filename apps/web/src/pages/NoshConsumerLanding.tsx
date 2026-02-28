@@ -127,7 +127,7 @@ export default function NoshConsumerLanding() {
           <FadeUp delay={0.3}>
             <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
               <Link
-                to="/auth"
+                to="/nosh/auth"
                 className="px-8 py-3 rounded-full text-sm font-semibold shadow-lg hover:opacity-90 transition-all"
                 style={{ background: "#D94878", color: "#fff" }}
               >
@@ -320,7 +320,7 @@ export default function NoshConsumerLanding() {
             </p>
             <div className="mt-6 flex flex-col sm:flex-row items-center justify-center gap-3">
               <Link
-                to="/auth"
+                to="/nosh/auth"
                 className="px-8 py-3 rounded-full text-sm font-semibold hover:opacity-90 transition-all"
                 style={{ background: "#D94878", color: "#fff" }}
               >
