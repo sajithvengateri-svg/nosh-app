@@ -97,10 +97,10 @@ const HOW_IT_WORKS = [
    Stat Counter
    ═══════════════════════════════════════════════════════════════ */
 function StatPill({ value, suffix, label }: { value: number; suffix: string; label: string }) {
-  const count = useCountUp(value, 2000);
+  const { count, ref } = useCountUp(value, 2000);
   return (
     <div className="text-center px-4">
-      <p className="text-2xl md:text-3xl font-bold" style={{ color: "#D94878" }}>
+      <p ref={ref} className="text-2xl md:text-3xl font-bold" style={{ color: "#D94878" }}>
         {count.toLocaleString()}{suffix}
       </p>
       <p className="text-xs mt-1" style={{ color: "#7A6B75" }}>{label}</p>
