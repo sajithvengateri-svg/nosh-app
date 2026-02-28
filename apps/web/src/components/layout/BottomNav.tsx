@@ -17,13 +17,14 @@ interface BottomNavProps {
   className?: string;
 }
 
-// Fixed 5-tab layout for home cook mode (mirrors mobile)
+// Fixed 6-tab layout for home cook mode (mirrors mobile)
 const HOME_COOK_TABS = [
   { path: "/dashboard", icon: null, label: "Home", isHome: true },
   { path: "/recipes", icon: BookOpen, label: "My Recipes" },
   { path: "/kitchen", icon: Utensils, label: "My Kitchen" },
   { path: "/food-safety", icon: Shield, label: "Safety" },
   { path: "/games", icon: Gamepad2, label: "Games" },
+  { path: "/settings", icon: Settings, label: "Settings" },
 ];
 
 // Fixed 5-tab layout for EatSafe / compliance mode (mirrors mobile)
@@ -35,13 +36,14 @@ const EATSAFE_TABS = [
   { path: "/settings", icon: Settings, label: "Settings" },
 ];
 
-// Fixed 5-tab layout for ChefOS Pro (mirrors mobile default)
+// Fixed 6-tab layout for ChefOS Pro (mirrors mobile default)
 const CHEFOS_PRO_TABS = [
   { path: "/dashboard", icon: null, label: "Home", isHome: true },
   { path: "/recipes", icon: BookOpen, label: "Recipes" },
   { path: "/kitchen", icon: Utensils, label: "Kitchen" },
   { path: "/food-safety", icon: Shield, label: "Safety" },
   { path: "/games", icon: Gamepad2, label: "Games" },
+  { path: "/settings", icon: Settings, label: "Settings" },
 ];
 
 const BottomNav = ({ className }: BottomNavProps) => {
