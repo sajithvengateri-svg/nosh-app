@@ -53,6 +53,8 @@ import Logs from "./pages/Logs";
 import Feedback from "./pages/Feedback";
 import ChefOSLanding from "./pages/ChefOSLanding";
 import HomeCookLanding from "./pages/HomeCookLanding";
+import NoshConsumerLanding from "./pages/NoshConsumerLanding";
+import NoshVendorLanding from "./pages/NoshVendorLanding";
 import MoneyLiteDashboard from "./portals/money/components/MoneyLiteDashboard";
 import ReferAndSave from "./pages/ReferAndSave";
 import Download from "./pages/Download";
@@ -383,6 +385,8 @@ const App = () => (
               <Route path="/join/:token" element={<JoinTeam />} />
               <Route path="/join-shift/:token" element={<JoinShift />} />
               <Route path="/vendor-landing" element={<VendorLanding />} />
+              <Route path="/nosh" element={<NoshConsumerLanding />} />
+              <Route path="/nosh/vendors" element={<NoshVendorLanding />} />
               <Route path="/food-safety" element={<FoodSafetyLanding />} />
               <Route path="/chefos-india" element={<IndianChefOSLanding />} />
               <Route path="/chefos-gcc" element={<GCCChefOSLanding />} />
