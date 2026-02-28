@@ -390,6 +390,9 @@ const App = () => (
               <Route path="/vendor-landing" element={<VendorLanding />} />
               <Route path="/nosh" element={<NoshConsumerLanding />} />
               <Route path="/prepmi" element={<NoshConsumerLanding />} />
+              <Route path="/prepmi/auth" element={<NoshAuth />} />
+              <Route path="/prepmi/welcome" element={<NoshWelcome />} />
+              <Route path="/prepmi/vendors" element={<NoshVendorLanding />} />
               <Route path="/nosh/vendors" element={<NoshVendorLanding />} />
               <Route path="/nosh/auth" element={<NoshAuth />} />
               <Route path="/nosh/admin" element={<NoshAdmin />} />

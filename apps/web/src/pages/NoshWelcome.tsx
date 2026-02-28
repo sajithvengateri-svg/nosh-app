@@ -95,7 +95,7 @@ export default function NoshWelcome() {
 
             {/* Continue on web */}
             <Link
-              to="/dashboard"
+              to="/prepmi"
               className="block rounded-[16px] p-5 text-left transition-all hover:scale-[1.01]"
               style={{ background: NOSH.card, border: `1px solid ${NOSH.border}` }}
             >
@@ -118,7 +118,7 @@ export default function NoshWelcome() {
         {/* Back to landing */}
         <FadeUp delay={0.3}>
           <Link
-            to="/nosh"
+            to="/prepmi"
             className="inline-flex items-center gap-1.5 mt-6 text-xs hover:underline"
             style={{ color: NOSH.textMuted }}
           >
