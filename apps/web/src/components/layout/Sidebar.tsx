@@ -128,7 +128,10 @@ const Sidebar = ({ className }: SidebarProps) => {
 
   const getLabel = (rawLabel: string) => {
     const i18nKey = NAV_I18N_KEYS[rawLabel];
-    return i18nKey ? t(i18nKey) : rawLabel;
+    if (!i18nKey) return rawLabel;
+    const translated = t(i18nKey);
+    // If i18next returns the key itself, fall back to the English label
+    return translated === i18nKey ? rawLabel : translated;
   };
 
   const NavLink = ({ path, icon: Icon, label, homeCookLabel }: { path: string; icon: typeof Settings; label: string; homeCookLabel?: string }) => {
@@ -287,7 +290,7 @@ const Sidebar = ({ className }: SidebarProps) => {
         )}
         <Link to="/settings" className={cn("nav-item", location.pathname === "/settings" && "active")}>
           <Settings className="w-5 h-5" />
-          <span>{t("nav.settings")}</span>
+          <span>{t("nav.settings", "Settings")}</span>
         </Link>
         <Button
           variant="ghost"
@@ -295,7 +298,7 @@ const Sidebar = ({ className }: SidebarProps) => {
           onClick={() => { haptic("medium"); signOut(); }}
         >
           <LogOut className="w-5 h-5" />
-          <span>{t("nav.logOut")}</span>
+          <span>{t("nav.logOut", "Log Out")}</span>
         </Button>
       </div>
     </aside>
